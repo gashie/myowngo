@@ -5,8 +5,8 @@ func init() {
 	registerChallenges(map[string]Challenge{
 		"comments": {
 			Type:        "fix_bug",
-			Prompt:      "This Go code has comment syntax errors. Fix them!",
-			StarterCode: "package main\n\nimport \"fmt\"\n\n# This is a comment\nfunc main() {\n\t/* Print a greeting //\n\tfmt.Println(\"Hello, Go!\")\n}",
+			Prompt:      "Fix the comment syntax errors in this Go code.\n\nThere are 2 bugs:\n- One comment uses `#` instead of `//` (not valid Go)\n- One multi-line comment `/* */` is not closed properly\n\nFix both so the code compiles. The code uses `fmt.Println(\"Hello, Go!\")` which prints one line: `Hello, Go!`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Fix the 2 bugs below so this code compiles.\n// Expected output: Hello, Go!\n\n# This is a comment\nfunc main() {\n\t/* Print a greeting //\n\tfmt.Println(\"Hello, Go!\")\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\n// This is a comment\nfunc main() {\n\t/* Print a greeting */\n\tfmt.Println(\"Hello, Go!\")\n}",
 			ExpectedOut: "Hello, Go!\n",
 			Hints:       []string{"Go uses // for single-line comments, not #", "Multi-line comments need /* to open and */ to close"},
@@ -15,8 +15,8 @@ func init() {
 		},
 		"types": {
 			Type:        "build",
-			Prompt:      "Declare variables of different types and print their types using fmt.Printf with %T:\n- an int set to 42\n- a float64 set to 3.14\n- a string set to \"hello\"\n- a bool set to true\nPrint each type on its own line.",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// Declare variables and print their types with %T\n}",
+			Prompt:      "Declare variables of different types and print their types.\n\nRequirements:\n- Declare an `int` variable set to `42`\n- Declare a `float64` variable set to `3.14`\n- Declare a `string` variable set to `\"hello\"`\n- Declare a `bool` variable set to `true`\n- Use `fmt.Printf(\"%T\\n\", varName)` for each — `%T` prints the type, `\\n` adds a newline\n- Output must be exactly 4 lines: `int` then `float64` then `string` then `bool`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Declare 4 variables and print their types.\n// Use := for short declaration, %T to print type.\n//\n// Expected output:\n//   int\n//   float64\n//   string\n//   bool\n\nfunc main() {\n\t// Declare your variables here\n\n\t// Print each type with fmt.Printf(\"%T\\n\", varName)\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc main() {\n\ta := 42\n\tb := 3.14\n\tc := \"hello\"\n\td := true\n\tfmt.Printf(\"%T\\n\", a)\n\tfmt.Printf(\"%T\\n\", b)\n\tfmt.Printf(\"%T\\n\", c)\n\tfmt.Printf(\"%T\\n\", d)\n}",
 			ExpectedOut: "int\nfloat64\nstring\nbool\n",
 			Hints:       []string{"%T prints the TYPE of a value", "Use := for short variable declaration"},
@@ -25,8 +25,8 @@ func init() {
 		},
 		"interpolation": {
 			Type:        "rewrite",
-			Prompt:      "Rewrite this JS template literal in Go:\n\nconst name = \"Alice\";\nconst age = 30;\nconsole.log(`Name: ${name}, Age: ${age}`);",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tname := \"Alice\"\n\tage := 30\n\t// Print: Name: Alice, Age: 30\n}",
+			Prompt:      "Convert this JavaScript template literal to Go.\n\nJavaScript version:\n```js\nconst name = \"Alice\";\nconst age = 30;\nconsole.log(`Name: ${name}, Age: ${age}`);\n```\n\nRequirements:\n- Use `fmt.Printf(\"Name: %s, Age: %d\\n\", name, age)` — `%s` for string, `%d` for integer\n- Variables `name` and `age` are already declared in the starter code\n- Don't forget `\\n` at the end — `fmt.Printf` does NOT add a newline automatically\n- Output must be exactly one line: `Name: Alice, Age: 30`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Convert the JS template literal below to Go.\n// JS:  console.log(`Name: ${name}, Age: ${age}`)\n// Go uses fmt.Printf with %s (string) and %d (int).\n//\n// Expected output: Name: Alice, Age: 30\n\nfunc main() {\n\tname := \"Alice\"\n\tage := 30\n\t// Print using fmt.Printf — don't forget \\n at the end!\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tname := \"Alice\"\n\tage := 30\n\tfmt.Printf(\"Name: %s, Age: %d\\n\", name, age)\n}",
 			ExpectedOut: "Name: Alice, Age: 30\n",
 			Hints:       []string{"Use fmt.Printf with %s for strings and %d for integers", "Don't forget the \\n at the end!"},
@@ -35,8 +35,8 @@ func init() {
 		},
 		"while_loop": {
 			Type:        "build",
-			Prompt:      "Write a Go while-style loop that starts at 1 and doubles the value each iteration, printing it. Stop when the value exceeds 100.",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// Start at 1, double each time, print, stop after 100\n}",
+			Prompt:      "Write a Go while-style loop that doubles a number.\n\nRequirements:\n- Start with `n := 1`\n- Use `for n <= 100 {` (Go's version of `while`)\n- Inside the loop: first call `fmt.Println(n)` to print the current value on its own line, then double it with `n *= 2`\n- Output must be exactly 7 lines (one number per line): `1` `2` `4` `8` `16` `32` `64`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Go has no 'while' keyword. Use 'for' with a condition:\n//   for condition { ... }\n//\n// Start at 1, double each time, stop when > 100.\n// Print each value before doubling.\n//\n// Expected output: 1, 2, 4, 8, 16, 32, 64\n\nfunc main() {\n\t// Write your while-style loop here\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tn := 1\n\tfor n <= 100 {\n\t\tfmt.Println(n)\n\t\tn *= 2\n\t}\n}",
 			ExpectedOut: "1\n2\n4\n8\n16\n32\n64\n",
 			Hints:       []string{"Use 'for condition { }' as a while loop", "n *= 2 doubles the value"},
@@ -45,8 +45,8 @@ func init() {
 		},
 		"default_values": {
 			Type:        "build",
-			Prompt:      "Write a variadic function greet that takes names ...string. If no names given, print \"Hello, World!\". Otherwise print \"Hello, <name>!\" for each name. Test with greet() and greet(\"Alice\", \"Bob\").",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc greet(names ...string) {\n\t// If no names, print Hello, World!\n\t// Otherwise print Hello, <name>! for each\n}\n\nfunc main() {\n\tgreet()\n\tgreet(\"Alice\", \"Bob\")\n}",
+			Prompt:      "Write a variadic greet function with a default behavior.\n\nRequirements:\n- Define `func greet(names ...string)`\n- If no names are given (`len(names) == 0`), use `fmt.Println(\"Hello, World!\")` — prints on its own line\n- Otherwise, use `fmt.Printf(\"Hello, %s!\\n\", name)` for each name — `%s` inserts the name, `\\n` adds newline\n- Call `greet()` with no arguments, then `greet(\"Alice\", \"Bob\")`\n- Output must be exactly 3 lines:\n  - `Hello, World!`\n  - `Hello, Alice!`\n  - `Hello, Bob!`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Write a variadic function that greets names.\n// ...string means 0 or more string arguments.\n// No names → print a default greeting.\n//\n// Expected output:\n//   Hello, World!\n//   Hello, Alice!\n//   Hello, Bob!\n\nfunc greet(names ...string) {\n\t// Your code here\n}\n\nfunc main() {\n\tgreet()\n\tgreet(\"Alice\", \"Bob\")\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc greet(names ...string) {\n\tif len(names) == 0 {\n\t\tfmt.Println(\"Hello, World!\")\n\t\treturn\n\t}\n\tfor _, name := range names {\n\t\tfmt.Printf(\"Hello, %s!\\n\", name)\n\t}\n}\n\nfunc main() {\n\tgreet()\n\tgreet(\"Alice\", \"Bob\")\n}",
 			ExpectedOut: "Hello, World!\nHello, Alice!\nHello, Bob!\n",
 			Hints:       []string{"Check len(names) == 0 for no arguments", "Variadic params are a slice inside the function"},
@@ -55,8 +55,8 @@ func init() {
 		},
 		"iife": {
 			Type:        "rewrite",
-			Prompt:      "Rewrite this JS IIFE in Go:\n\n(function() {\n  const msg = 'hello from IIFE';\n  console.log(msg);\n})();",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// Write an immediately invoked function\n}",
+			Prompt:      "Convert this JavaScript IIFE to Go.\n\nJavaScript version:\n```js\n(function() {\n  const msg = 'hello from IIFE';\n  console.log(msg);\n})();\n```\n\nRequirements:\n- Use Go's anonymous function syntax: `func() { ... }()`\n- Declare `msg := \"hello from IIFE\"` inside the function\n- Use `fmt.Println(msg)` to print it on its own line\n- Call the function immediately with `()` at the end\n- Output must be exactly one line: `hello from IIFE`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Convert this JS IIFE to Go:\n//   (function() { console.log('hello from IIFE'); })();\n//\n// Go syntax: func() { ... }()\n// The () at the end calls it immediately.\n//\n// Expected output: hello from IIFE\n\nfunc main() {\n\t// Write your immediately invoked function here\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfunc() {\n\t\tmsg := \"hello from IIFE\"\n\t\tfmt.Println(msg)\n\t}()\n}",
 			ExpectedOut: "hello from IIFE\n",
 			Hints:       []string{"Go IIFE syntax: func() { ... }()", "The () at the end calls the function immediately"},
@@ -65,8 +65,8 @@ func init() {
 		},
 		"spread": {
 			Type:        "build",
-			Prompt:      "Combine two slices []int{1, 2, 3} and []int{4, 5, 6} into one using append with ... and print the result.",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc main() {\n\ta := []int{1, 2, 3}\n\tb := []int{4, 5, 6}\n\t// Combine and print\n}",
+			Prompt:      "Combine two slices into one using Go's spread operator.\n\nRequirements:\n- Two slices are already declared: `a := []int{1, 2, 3}` and `b := []int{4, 5, 6}`\n- Use `c := append(a, b...)` to combine them (the `...` unpacks slice `b`)\n- Use `fmt.Println(c)` to print the combined slice — Go prints slices in `[1 2 3 4 5 6]` format (space-separated, in brackets)\n- Output must be exactly one line: `[1 2 3 4 5 6]`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Combine two slices using append.\n// JS:  const c = [...a, ...b]\n// Go:  c := append(a, b...)  — the ... unpacks the slice\n//\n// Expected output: [1 2 3 4 5 6]\n\nfunc main() {\n\ta := []int{1, 2, 3}\n\tb := []int{4, 5, 6}\n\t// Combine and print the result\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc main() {\n\ta := []int{1, 2, 3}\n\tb := []int{4, 5, 6}\n\tc := append(a, b...)\n\tfmt.Println(c)\n}",
 			ExpectedOut: "[1 2 3 4 5 6]\n",
 			Hints:       []string{"Use append(a, b...) to unpack slice b into append", "The ... unpacks the slice like JS spread"},
@@ -75,8 +75,8 @@ func init() {
 		},
 		"uint8_arrays": {
 			Type:        "build",
-			Prompt:      "Create a byte slice from the string \"GoQuest\" and print it, then convert it back to a string and print that.",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// Convert string to []byte, print, convert back, print\n}",
+			Prompt:      "Convert between strings and byte slices.\n\nRequirements:\n- Use `b := []byte(\"GoQuest\")` to convert the string to bytes\n- Use `fmt.Println(b)` to print the byte slice — Go prints it as `[71 111 81 117 101 115 116]` (space-separated ASCII values in brackets)\n- Use `s := string(b)` to convert back to a string\n- Use `fmt.Println(s)` to print it — prints `GoQuest` on its own line\n- Output must be exactly two lines:\n  - `[71 111 81 117 101 115 116]`\n  - `GoQuest`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Convert a string to []byte and back.\n// []byte(str) converts to bytes, string(b) converts back.\n//\n// Expected output:\n//   [71 111 81 117 101 115 116]\n//   GoQuest\n\nfunc main() {\n\t// Convert \"GoQuest\" to []byte, print it\n\t// Convert back to string, print it\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tb := []byte(\"GoQuest\")\n\tfmt.Println(b)\n\ts := string(b)\n\tfmt.Println(s)\n}",
 			ExpectedOut: "[71 111 81 117 101 115 116]\nGoQuest\n",
 			Hints:       []string{"[]byte(str) converts string to bytes", "string(bytes) converts bytes back to string"},
@@ -85,8 +85,8 @@ func init() {
 		},
 		"big_numbers": {
 			Type:        "build",
-			Prompt:      "Create two big.Int values: a=100 and b=200. Add them and print the result.",
-			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"math/big\"\n)\n\nfunc main() {\n\t// Create big.Int a=100, b=200, add them, print\n}",
+			Prompt:      "Add two big integers using the `math/big` package.\n\nRequirements:\n- Create `a := big.NewInt(100)` and `b := big.NewInt(200)`\n- Create `result := new(big.Int)` then call `result.Add(a, b)`\n- Use `fmt.Println(result)` to print — `big.Int` prints as a plain number\n- Output must be exactly one line: `300`",
+			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"math/big\"\n)\n\n// Add two big integers using math/big.\n// big.NewInt creates a *big.Int from an int64.\n// result.Add(a, b) stores a+b in result.\n//\n// Expected output: 300\n\nfunc main() {\n\t// Create two big.Int values and add them\n}",
 			Solution:    "package main\n\nimport (\n\t\"fmt\"\n\t\"math/big\"\n)\n\nfunc main() {\n\ta := big.NewInt(100)\n\tb := big.NewInt(200)\n\tresult := new(big.Int)\n\tresult.Add(a, b)\n\tfmt.Println(result)\n}",
 			ExpectedOut: "300\n",
 			Hints:       []string{"big.NewInt(100) creates a *big.Int", "result.Add(a, b) stores a+b in result"},
@@ -95,8 +95,8 @@ func init() {
 		},
 		"buffers": {
 			Type:        "build",
-			Prompt:      "Create a bytes.Buffer, write \"Hello\" and \" World\" to it, then print the final string.",
-			StarterCode: "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n)\n\nfunc main() {\n\t// Use bytes.Buffer to build a string\n}",
+			Prompt:      "Build a string using `bytes.Buffer`.\n\nRequirements:\n- Create a buffer with `var buf bytes.Buffer`\n- Call `buf.WriteString(\"Hello\")` then `buf.WriteString(\" World\")`\n- Use `fmt.Println(buf.String())` to print the combined string on its own line\n- Output must be exactly one line: `Hello World`",
+			StarterCode: "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n)\n\n// Build a string using bytes.Buffer (like StringBuilder).\n// WriteString appends to the buffer.\n// buf.String() returns the accumulated string.\n//\n// Expected output: Hello World\n\nfunc main() {\n\t// Create a buffer and build the string\n}",
 			Solution:    "package main\n\nimport (\n\t\"bytes\"\n\t\"fmt\"\n)\n\nfunc main() {\n\tvar buf bytes.Buffer\n\tbuf.WriteString(\"Hello\")\n\tbuf.WriteString(\" World\")\n\tfmt.Println(buf.String())\n}",
 			ExpectedOut: "Hello World\n",
 			Hints:       []string{"var buf bytes.Buffer creates a zero-value buffer", "buf.WriteString() appends to the buffer"},
@@ -105,8 +105,8 @@ func init() {
 		},
 		"stack_trace": {
 			Type:        "build",
-			Prompt:      "Write a function that panics with \"test error\". Use defer/recover in main to catch it and print \"caught: test error\".",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc boom() {\n\t// panic here\n}\n\nfunc main() {\n\t// defer/recover, then call boom()\n}",
+			Prompt:      "Recover from a panic using defer/recover.\n\nRequirements:\n- The `boom()` function should call `panic(\"test error\")`\n- In `main`, use `defer func() { ... }()` BEFORE calling `boom()`\n- Inside the deferred function, use `if r := recover(); r != nil {`\n- Use `fmt.Printf(\"caught: %s\\n\", r)` to print — `%s` inserts the panic value, `\\n` adds newline\n- Then call `boom()` after the defer\n- Output must be exactly one line: `caught: test error`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Go uses panic/recover instead of try/catch.\n// defer runs AFTER the function returns (or panics).\n// recover() catches the panic value inside a defer.\n//\n// Expected output: caught: test error\n\nfunc boom() {\n\t// Trigger a panic here\n}\n\nfunc main() {\n\t// Set up a deferred recover, then call boom()\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc boom() {\n\tpanic(\"test error\")\n}\n\nfunc main() {\n\tdefer func() {\n\t\tif r := recover(); r != nil {\n\t\t\tfmt.Printf(\"caught: %s\\n\", r)\n\t\t}\n\t}()\n\tboom()\n}",
 			ExpectedOut: "caught: test error\n",
 			Hints:       []string{"defer func() { recover() }() before the panic call", "recover() returns the panic value"},
@@ -115,8 +115,8 @@ func init() {
 		},
 		"stderr": {
 			Type:        "rewrite",
-			Prompt:      "Rewrite in Go:\nprocess.stderr.write('error occurred\\n')",
-			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\t// Write to stderr\n}",
+			Prompt:      "Convert this Node.js stderr write to Go.\n\nJavaScript version:\n```js\nprocess.stderr.write('error occurred\\n')\n```\n\nRequirements:\n- Use `fmt.Fprint(os.Stderr, \"error occurred\\n\")` — writes to stderr, not stdout\n- Import both `\"fmt\"` and `\"os\"` packages\n- **Note:** stderr output won't appear in the output panel — this test expects empty stdout",
+			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"os\"\n)\n\n// Write to stderr instead of stdout.\n// JS:  process.stderr.write('error occurred\\n')\n// Go:  fmt.Fprint(os.Stderr, \"error occurred\\n\")\n//\n// Note: stderr won't appear in the output panel.\n// This test expects EMPTY stdout.\n\nfunc main() {\n\t// Write an error message to stderr\n}",
 			Solution:    "package main\n\nimport (\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tfmt.Fprint(os.Stderr, \"error occurred\\n\")\n}",
 			ExpectedOut: "",
 			Hints:       []string{"Use fmt.Fprint(os.Stderr, ...)", "stderr output won't show in Go Playground"},
@@ -125,8 +125,8 @@ func init() {
 		},
 		"gzip": {
 			Type:        "build",
-			Prompt:      "Create a bytes.Buffer, compress the string \"hello world\" with gzip, then decompress it and print the result.",
-			StarterCode: "package main\n\nimport (\n\t\"bytes\"\n\t\"compress/gzip\"\n\t\"fmt\"\n\t\"io\"\n)\n\nfunc main() {\n\t// Compress and decompress \"hello world\"\n}",
+			Prompt:      "Compress and decompress a string using gzip.\n\nRequirements:\n- Create a `var buf bytes.Buffer` to hold the compressed data\n- Create `w := gzip.NewWriter(&buf)`, write `[]byte(\"hello world\")` to it, then `w.Close()`\n- Create `r, _ := gzip.NewReader(&buf)` to decompress\n- Read all with `data, _ := io.ReadAll(r)`\n- Use `fmt.Println(string(data))` to print the decompressed string on its own line\n- Output must be exactly one line: `hello world`",
+			StarterCode: "package main\n\nimport (\n\t\"bytes\"\n\t\"compress/gzip\"\n\t\"fmt\"\n\t\"io\"\n)\n\n// Compress \"hello world\" with gzip, then decompress it.\n// gzip.NewWriter wraps a buffer for writing.\n// gzip.NewReader wraps a buffer for reading.\n// Always Close() the writer before reading!\n//\n// Expected output: hello world\n\nfunc main() {\n\t// Compress and decompress \"hello world\"\n}",
 			Solution:    "package main\n\nimport (\n\t\"bytes\"\n\t\"compress/gzip\"\n\t\"fmt\"\n\t\"io\"\n)\n\nfunc main() {\n\tvar buf bytes.Buffer\n\tw := gzip.NewWriter(&buf)\n\tw.Write([]byte(\"hello world\"))\n\tw.Close()\n\n\tr, _ := gzip.NewReader(&buf)\n\tdata, _ := io.ReadAll(r)\n\tfmt.Println(string(data))\n}",
 			ExpectedOut: "hello world\n",
 			Hints:       []string{"gzip.NewWriter wraps any io.Writer", "Always Close() the gzip writer to flush"},
@@ -135,8 +135,8 @@ func init() {
 		},
 		"promises": {
 			Type:        "build",
-			Prompt:      "Create a function that returns a channel. Send \"hello\" on it in a goroutine. Receive the value in main and print it.",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc greetAsync() chan string {\n\t// Create channel, send \"hello\" in goroutine, return channel\n}\n\nfunc main() {\n\t// Receive and print\n}",
+			Prompt:      "Create an async function using goroutines and channels.\n\nRequirements:\n- Define `func greetAsync() chan string` that returns a channel\n- Inside, create `ch := make(chan string, 1)` (buffered channel)\n- Start a goroutine `go func() { ch <- \"hello\" }()` that sends `\"hello\"`\n- Return the channel\n- In `main`, use `fmt.Println(<-greetAsync())` to receive and print on its own line\n- Output must be exactly one line: `hello`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Go uses channels instead of Promises.\n// JS:  async function greetAsync() { return \"hello\"; }\n// Go:  create a channel, send in a goroutine, return it.\n//\n// Expected output: hello\n\nfunc greetAsync() chan string {\n\t// Create a buffered channel, send \"hello\" in a goroutine\n\t// Return the channel\n}\n\nfunc main() {\n\t// Receive from greetAsync() and print\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc greetAsync() chan string {\n\tch := make(chan string, 1)\n\tgo func() {\n\t\tch <- \"hello\"\n\t}()\n\treturn ch\n}\n\nfunc main() {\n\tresult := <-greetAsync()\n\tfmt.Println(result)\n}",
 			ExpectedOut: "hello\n",
 			Hints:       []string{"ch := make(chan string, 1) creates a buffered channel", "<-ch receives a value from the channel"},
@@ -145,8 +145,8 @@ func init() {
 		},
 		"async_await": {
 			Type:        "build",
-			Prompt:      "Write a function compute that returns a channel. In a goroutine, send the result of 21 * 2. In main, receive and print it.",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc compute() chan int {\n\t// Return channel with 21 * 2\n}\n\nfunc main() {\n\tresult := <-compute()\n\tfmt.Println(result)\n}",
+			Prompt:      "Compute a value asynchronously using a goroutine and channel.\n\nRequirements:\n- Define `func compute() chan int` that returns a channel\n- Inside, create `ch := make(chan int, 1)` (buffered channel)\n- Start a goroutine that sends `21 * 2` on the channel\n- Return the channel\n- In `main`, use `fmt.Println(<-compute())` to receive and print on its own line\n- Output must be exactly one line: `42`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Compute 21 * 2 asynchronously using a goroutine.\n// Return the result via a buffered channel.\n//\n// Expected output: 42\n\nfunc compute() chan int {\n\t// Create channel, send 21 * 2 in goroutine, return channel\n}\n\nfunc main() {\n\tresult := <-compute()\n\tfmt.Println(result)\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc compute() chan int {\n\tch := make(chan int, 1)\n\tgo func() {\n\t\tch <- 21 * 2\n\t}()\n\treturn ch\n}\n\nfunc main() {\n\tresult := <-compute()\n\tfmt.Println(result)\n}",
 			ExpectedOut: "42\n",
 			Hints:       []string{"Send the computation result on the channel", "<-compute() blocks until a value is available"},
@@ -155,8 +155,8 @@ func init() {
 		},
 		"event_emitter": {
 			Type:        "build",
-			Prompt:      "Create a channel, start a goroutine that reads from it and prints the message. Send \"ping\" on the channel from main.",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// Create channel, goroutine listener, send \"ping\"\n}",
+			Prompt:      "Send and receive a message using channels (Go's event system).\n\nRequirements:\n- Create `ch := make(chan string)` (unbuffered channel)\n- Start a goroutine: `go func() { msg := <-ch; fmt.Println(msg) }()`\n- The goroutine uses `fmt.Println` to print the received message on its own line\n- Send `\"ping\"` on the channel from `main` with `ch <- \"ping\"`\n- Output must be exactly one line: `ping`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Use channels for message passing (like EventEmitter).\n// An unbuffered channel synchronizes sender and receiver.\n//\n// Expected output: ping\n\nfunc main() {\n\t// Create channel, start goroutine listener, send \"ping\"\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tch := make(chan string)\n\tgo func() {\n\t\tmsg := <-ch\n\t\tfmt.Println(msg)\n\t}()\n\tch <- \"ping\"\n}",
 			ExpectedOut: "ping\n",
 			Hints:       []string{"make(chan string) creates an unbuffered channel", "Unbuffered channels synchronize sender and receiver"},
@@ -165,8 +165,8 @@ func init() {
 		},
 		"timeout": {
 			Type:        "build",
-			Prompt:      "Use time.After to wait 10 milliseconds, then print \"done\". (We use 10ms instead of 1s so the playground doesn't timeout.)",
-			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nfunc main() {\n\t// Wait 10ms then print\n}",
+			Prompt:      "Wait for a timeout using `time.After`.\n\nRequirements:\n- Use `<-time.After(10 * time.Millisecond)` to block for 10ms\n- After the wait, use `fmt.Println(\"done\")` to print on its own line\n- We use 10ms instead of 1s so the playground doesn't timeout\n- Output must be exactly one line: `done`",
+			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\n// Wait using time.After (like setTimeout in JS).\n// time.After returns a channel that fires after a delay.\n// <-channel blocks until the delay elapses.\n//\n// Expected output: done\n\nfunc main() {\n\t// Wait 10ms, then print \"done\"\n}",
 			Solution:    "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nfunc main() {\n\t<-time.After(10 * time.Millisecond)\n\tfmt.Println(\"done\")\n}",
 			ExpectedOut: "done\n",
 			Hints:       []string{"<-time.After(duration) blocks for the specified time", "time.Millisecond is a time.Duration constant"},
@@ -175,8 +175,8 @@ func init() {
 		},
 		"interval": {
 			Type:        "build",
-			Prompt:      "Use time.NewTicker to print \"tick\" 3 times with 10ms intervals, then stop.",
-			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nfunc main() {\n\t// Ticker that prints \"tick\" 3 times\n}",
+			Prompt:      "Print on a repeating interval using `time.NewTicker`.\n\nRequirements:\n- Create `ticker := time.NewTicker(10 * time.Millisecond)`\n- Use `for range ticker.C {` to read tick events\n- Call `fmt.Println(\"tick\")` to print `tick` on its own line each time\n- Count ticks — after 3 ticks, call `ticker.Stop()` and `break`\n- Output must be exactly 3 lines: `tick` `tick` `tick`",
+			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\n// Use a Ticker for repeating events (like setInterval).\n// ticker.C is a channel that fires on each tick.\n// Don't forget to Stop() the ticker when done!\n//\n// Expected output:\n//   tick\n//   tick\n//   tick\n\nfunc main() {\n\t// Create a ticker, print \"tick\" 3 times, then stop\n}",
 			Solution:    "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nfunc main() {\n\tticker := time.NewTicker(10 * time.Millisecond)\n\tcount := 0\n\tfor range ticker.C {\n\t\tfmt.Println(\"tick\")\n\t\tcount++\n\t\tif count == 3 {\n\t\t\tticker.Stop()\n\t\t\tbreak\n\t\t}\n\t}\n}",
 			ExpectedOut: "tick\ntick\ntick\n",
 			Hints:       []string{"for range ticker.C reads tick events", "ticker.Stop() stops the ticker (like clearInterval)"},
@@ -185,8 +185,8 @@ func init() {
 		},
 		"module_import": {
 			Type:        "rewrite",
-			Prompt:      "Rewrite this JS import in Go:\nconst fmt = require('fmt')\nconst strings = require('strings')\nfmt.Println(strings.ToUpper('hello'))\n\n(Note: in Go, these are standard library imports)",
-			StarterCode: "package main\n\n// Import fmt and strings\n\nfunc main() {\n\t// Print \"hello\" in uppercase using strings.ToUpper\n}",
+			Prompt:      "Convert this Node.js require to Go imports.\n\nJavaScript version:\n```js\nconst fmt = require('fmt')\nconst strings = require('strings')\nfmt.Println(strings.ToUpper('hello'))\n```\n\nRequirements:\n- Use `import ( \"fmt\"; \"strings\" )` block to import both packages\n- Use `fmt.Println(strings.ToUpper(\"hello\"))` to print on its own line\n- Output must be exactly one line: `HELLO`",
+			StarterCode: "package main\n\n// Import \"fmt\" and \"strings\" packages.\n// Use an import block: import ( \"pkg1\"; \"pkg2\" )\n//\n// Expected output: HELLO\n\n// Add your imports here\n\nfunc main() {\n\t// Print \"hello\" in uppercase using strings.ToUpper\n}",
 			Solution:    "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc main() {\n\tfmt.Println(strings.ToUpper(\"hello\"))\n}",
 			ExpectedOut: "HELLO\n",
 			Hints:       []string{"Use import ( ) with each package on its own line", "strings.ToUpper converts to uppercase"},
@@ -195,8 +195,8 @@ func init() {
 		},
 		"documentation": {
 			Type:        "build",
-			Prompt:      "Write a function Add(a, b int) int with a proper Go doc comment that starts with the function name. Call it and print Add(3, 4).",
-			StarterCode: "package main\n\nimport \"fmt\"\n\n// Write Add with doc comment\n\nfunc main() {\n\tfmt.Println(Add(3, 4))\n}",
+			Prompt:      "Write a documented function following Go conventions.\n\nRequirements:\n- Add a doc comment: `// Add returns the sum of a and b.` (must start with function name)\n- Write `func Add(a, b int) int` that returns `a + b`\n- In main, use `fmt.Println(Add(3, 4))` to print the result on its own line\n- Output must be exactly one line: `7`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Go doc comments start with the function name.\n// Uppercase names are exported (public).\n//\n// Expected output: 7\n\n// Write your doc comment and Add function here\n\nfunc main() {\n\tfmt.Println(Add(3, 4))\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\n// Add returns the sum of a and b.\nfunc Add(a, b int) int {\n\treturn a + b\n}\n\nfunc main() {\n\tfmt.Println(Add(3, 4))\n}",
 			ExpectedOut: "7\n",
 			Hints:       []string{"Doc comments start with // and the function name", "Convention: // FuncName does..."},
@@ -205,8 +205,8 @@ func init() {
 		},
 		"logging": {
 			Type:        "rewrite",
-			Prompt:      "Rewrite in Go using the log package:\nconsole.log(new Date().toISOString(), 'server started')",
-			StarterCode: "package main\n\nimport \"log\"\n\nfunc main() {\n\t// Use log.Println\n}",
+			Prompt:      "Convert this Node.js console.log with timestamp to Go.\n\nJavaScript version:\n```js\nconsole.log(new Date().toISOString(), 'server started')\n```\n\nRequirements:\n- Use `log.Println(\"server started\")` — adds timestamp automatically, writes to stderr\n- Import the `log` package\n- **Note:** log output goes to stderr, so the output panel will be empty — this test expects empty stdout",
+			StarterCode: "package main\n\nimport \"log\"\n\n// JS:  console.log(new Date().toISOString(), 'server started')\n// Go:  log.Println adds a timestamp automatically.\n//\n// Note: log writes to stderr, NOT stdout.\n// This test expects EMPTY stdout.\n\nfunc main() {\n\t// Log \"server started\" with a timestamp\n}",
 			Solution:    "package main\n\nimport \"log\"\n\nfunc main() {\n\tlog.Println(\"server started\")\n}",
 			ExpectedOut: "",
 			Hints:       []string{"log.Println adds timestamp automatically", "log output goes to stderr, so playground may not show it"},
@@ -215,8 +215,8 @@ func init() {
 		},
 		"module_export_usage": {
 			Type:        "build",
-			Prompt:      "Import the \"strings\" package and use strings.ToUpper to print \"hello\" in uppercase.",
-			StarterCode: "package main\n\n// Import the right packages\n\nfunc main() {\n\t// Use strings.ToUpper and print\n}",
+			Prompt:      "Import and use an exported function from the standard library.\n\nRequirements:\n- Import both `\"fmt\"` and `\"strings\"` packages using `import ( )`\n- Use `fmt.Println(strings.ToUpper(\"hello\"))` to print the uppercase version on its own line\n- Output must be exactly one line: `HELLO`",
+			StarterCode: "package main\n\n// In Go, uppercase functions are exported (public).\n// Import both \"fmt\" and \"strings\" packages.\n//\n// Expected output: HELLO\n\n// Add your imports here\n\nfunc main() {\n\t// Use strings.ToUpper and print the result\n}",
 			Solution:    "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc main() {\n\tfmt.Println(strings.ToUpper(\"hello\"))\n}",
 			ExpectedOut: "HELLO\n",
 			Hints:       []string{"Import both fmt and strings", "strings.ToUpper returns the uppercase version"},
@@ -227,70 +227,96 @@ func init() {
 
 	registerTests(map[string][]TestCase{
 		"comments": {
-			{Name: "Prints greeting", ExpectedOut: "Hello, Go!\n"},
+			{Name: "Write a program with a // comment and a /* */ comment, then fmt.Println(\"Comments work!\")", ExpectedOut: "Comments work!\n"},
+			{Name: "Print 'Go comments are easy!' with a // comment above the Println", ExpectedOut: "Go comments are easy!\n"},
 		},
 		"types": {
-			{Name: "Prints correct types", ExpectedOut: "int\nfloat64\nstring\nbool\n"},
+			{Name: "Declare x := 100, y := 9.99, z := false. Use fmt.Printf(\"%T\\n\", ...) to print each type", ExpectedOut: "int\nfloat64\nbool\n"},
+			{Name: "Declare a := \"hello\", b := 7, c := 2.5. Print types with %T for each", ExpectedOut: "string\nint\nfloat64\n"},
 		},
 		"interpolation": {
-			{Name: "Formats string correctly", ExpectedOut: "Name: Alice, Age: 30\n"},
+			{Name: "Use fmt.Printf(\"City: %s, Pop: %d\\n\", city, pop) with city=\"Tokyo\", pop=14000000", ExpectedOut: "City: Tokyo, Pop: 14000000\n"},
+			{Name: "Use fmt.Printf(\"Item: %s, Qty: %d\\n\", item, qty) with item=\"widget\", qty=50", ExpectedOut: "Item: widget, Qty: 50\n"},
 		},
 		"while_loop": {
-			{Name: "Doubles to 64", ExpectedOut: "1\n2\n4\n8\n16\n32\n64\n"},
+			{Name: "Start at n := 100. Use for n >= 1 { fmt.Println(n); n /= 10 } to print 100, 10, 1", ExpectedOut: "100\n10\n1\n"},
+			{Name: "Start at n := 1. Use for n <= 16 { fmt.Println(n); n *= 2 } to print 1, 2, 4, 8, 16", ExpectedOut: "1\n2\n4\n8\n16\n"},
 		},
 		"default_values": {
-			{Name: "Default and custom greetings", ExpectedOut: "Hello, World!\nHello, Alice!\nHello, Bob!\n"},
+			{Name: "Write func shout(words ...string) that joins with '!' and prints. shout() prints 'BOOM!', shout(\"Go\",\"is\",\"great\") prints 'Go!is!great!'", ExpectedOut: "BOOM!\nGo!is!great!\n"},
+			{Name: "Call greet() then greet(\"Charlie\") — prints 'Hello, World!' then 'Hello, Charlie!'", ExpectedOut: "Hello, World!\nHello, Charlie!\n",
+				WrapperCode: "func main() {\n\tgreet()\n\tgreet(\"Charlie\")\n}"},
 		},
 		"iife": {
-			{Name: "IIFE runs", ExpectedOut: "hello from IIFE\n"},
+			{Name: "Write an IIFE func() { fmt.Println(\"self-invoked\") }() that prints 'self-invoked'", ExpectedOut: "self-invoked\n"},
+			{Name: "Write an IIFE func() { fmt.Println(\"anonymous\") }() that prints 'anonymous'", ExpectedOut: "anonymous\n"},
 		},
 		"spread": {
-			{Name: "Slices combined", ExpectedOut: "[1 2 3 4 5 6]\n"},
+			{Name: "Merge []string{\"a\",\"b\"} and []string{\"c\",\"d\"} using append(a, b...). Print with fmt.Println", ExpectedOut: "[a b c d]\n"},
+			{Name: "Merge []int{1, 2} and []int{3, 4} using append(a, b...). Print with fmt.Println", ExpectedOut: "[1 2 3 4]\n"},
 		},
 		"uint8_arrays": {
-			{Name: "String to bytes and back", ExpectedOut: "[71 111 81 117 101 115 116]\nGoQuest\n"},
+			{Name: "Convert \"Hello\" to []byte, print the bytes, convert back, print the string", ExpectedOut: "[72 101 108 108 111]\nHello\n"},
+			{Name: "Convert \"Go\" to []byte, print the bytes, convert back, print the string", ExpectedOut: "[71 111]\nGo\n"},
 		},
 		"big_numbers": {
-			{Name: "Adds big ints", ExpectedOut: "300\n"},
+			{Name: "Use big.NewInt to compute 999 + 1 and print the result with fmt.Println", ExpectedOut: "1000\n"},
+			{Name: "Use big.NewInt to compute 500 + 500 and print the result with fmt.Println", ExpectedOut: "1000\n"},
 		},
 		"buffers": {
-			{Name: "Buffer concatenation", ExpectedOut: "Hello World\n"},
+			{Name: "Use bytes.Buffer to concatenate \"Foo\" and \"Bar\", print with fmt.Println", ExpectedOut: "FooBar\n"},
+			{Name: "Use bytes.Buffer to concatenate \"Go\" and \"Quest\", print with fmt.Println", ExpectedOut: "GoQuest\n"},
 		},
 		"stack_trace": {
-			{Name: "Catches panic", ExpectedOut: "caught: test error\n"},
+			{Name: "Panic with \"kaboom\" and recover it. Print \"recovered: kaboom\" using fmt.Printf", ExpectedOut: "recovered: kaboom\n"},
+			{Name: "Panic with \"fatal\" and recover. Print \"recovered: fatal\" using fmt.Printf", ExpectedOut: "recovered: fatal\n"},
 		},
 		"gzip": {
-			{Name: "Compress and decompress", ExpectedOut: "hello world\n"},
+			{Name: "Compress and decompress the string \"GoQuest\". Print the result with fmt.Println", ExpectedOut: "GoQuest\n"},
+			{Name: "Compress and decompress \"test data\". Print the result with fmt.Println", ExpectedOut: "test data\n"},
 		},
 		"promises": {
-			{Name: "Receives from channel", ExpectedOut: "hello\n"},
+			{Name: "Write func fetchAsync() chan string that sends \"data\" on a buffered channel. Print <-fetchAsync()", ExpectedOut: "data\n"},
+			{Name: "Write func msgAsync() chan string that sends \"ok\" on a buffered channel. Print <-msgAsync()", ExpectedOut: "ok\n"},
 		},
 		"async_await": {
-			{Name: "Computes via goroutine", ExpectedOut: "42\n"},
+			{Name: "Write func double() chan int that sends 10*2 on a channel. Print <-double()", ExpectedOut: "20\n"},
+			{Name: "Write func triple() chan int that sends 7*3 on a channel. Print <-triple()", ExpectedOut: "21\n"},
 		},
 		"event_emitter": {
-			{Name: "Sends and receives message", ExpectedOut: "ping\n"},
+			{Name: "Send \"pong\" on a channel, receive in a goroutine, print with fmt.Println", ExpectedOut: "pong\n"},
+			{Name: "Send \"hello\" on a channel, receive in a goroutine, print with fmt.Println", ExpectedOut: "hello\n"},
 		},
 		"timeout": {
-			{Name: "Waits then prints", ExpectedOut: "done\n"},
+			{Name: "Wait 10ms with time.After, then fmt.Println(\"waited\")", ExpectedOut: "waited\n"},
+			{Name: "Wait 10ms with time.After, then fmt.Println(\"timeout\")", ExpectedOut: "timeout\n"},
 		},
 		"interval": {
-			{Name: "Ticks 3 times", ExpectedOut: "tick\ntick\ntick\n"},
+			{Name: "Use NewTicker(10ms) to print \"beep\" 2 times, then stop", ExpectedOut: "beep\nbeep\n"},
+			{Name: "Use NewTicker(10ms) to print \"tick\" 3 times, then stop", ExpectedOut: "tick\ntick\ntick\n"},
 		},
 		"module_import": {
-			{Name: "Imports and uses strings", ExpectedOut: "HELLO\n"},
+			{Name: "Import strings. Use fmt.Println(strings.ToLower(\"WORLD\")) to print 'world'", ExpectedOut: "world\n"},
+			{Name: "Import strings. Use fmt.Println(strings.Contains(\"GoQuest\", \"Quest\")) to print 'true'", ExpectedOut: "true\n"},
 		},
 		"documentation": {
-			{Name: "Add function works", ExpectedOut: "7\n"},
+			{Name: "Write func Subtract(a, b int) int with a doc comment. Print Subtract(10, 3) using fmt.Println", ExpectedOut: "7\n"},
+			{Name: "Add(5, 5) returns 10", ExpectedOut: "10\n",
+				WrapperCode: "func main() { fmt.Println(Add(5, 5)) }"},
+			{Name: "Add(0, 0) returns 0", ExpectedOut: "0\n",
+				WrapperCode: "func main() { fmt.Println(Add(0, 0)) }"},
 		},
 		"module_export_usage": {
-			{Name: "Calls exported function", ExpectedOut: "HELLO\n"},
+			{Name: "Import strings. Use fmt.Println(strings.Replace(\"Go Go Go\", \"Go\", \"Rust\", 1)) to print 'Rust Go Go'", ExpectedOut: "Rust Go Go\n"},
+			{Name: "Import strings. Use fmt.Println(strings.TrimSpace(\"  hello  \")) to print 'hello'", ExpectedOut: "hello\n"},
 		},
 		"stderr": {
-			{Name: "Writes to stderr", ExpectedOut: ""},
+			{Name: "Write to os.Stderr using fmt.Fprintln — stdout output is empty", ExpectedOut: ""},
+			{Name: "Use fmt.Fprint(os.Stderr, \"err\\n\") — stdout remains empty", ExpectedOut: ""},
 		},
 		"logging": {
-			{Name: "Logs message", ExpectedOut: ""},
+			{Name: "Use log.Println to log a message — stdout output is empty", ExpectedOut: ""},
+			{Name: "Use log.Printf to log a formatted message — stdout output is empty", ExpectedOut: ""},
 		},
 	})
 }

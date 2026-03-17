@@ -17,15 +17,13 @@ func New(curriculum *content.Curriculum) http.Handler {
 	mux.HandleFunc("GET /{$}", pages.Home)
 	mux.HandleFunc("GET /lesson/{slug}", pages.Lesson)
 	mux.HandleFunc("GET /dashboard", pages.Dashboard)
-	mux.HandleFunc("GET /empire", pages.Empire)
-	mux.HandleFunc("GET /challenges", pages.Challenges)
-	mux.HandleFunc("GET /challenges/{mode}", pages.ChallengeMode)
-	mux.HandleFunc("GET /story", pages.Story)
 
 	// JSON API
 	mux.HandleFunc("GET /api/lessons", api.ListLessons)
 	mux.HandleFunc("GET /api/lessons/{slug}", api.GetLesson)
+	mux.HandleFunc("GET /api/languages", api.ListLanguages)
 	mux.HandleFunc("POST /api/run", api.RunCode)
+	mux.HandleFunc("/api/run-local", api.RunCodeLocal)
 
 	// Static files
 	fs := http.FileServer(http.Dir("web/static"))

@@ -39,8 +39,8 @@ func init() {
 	registerChallenges(map[string]Challenge{
 		"class": {
 			Type:        "build",
-			Prompt:      "Create a struct Counter with a count field and methods Increment(), Decrement(), and GetCount(). Start at 0, increment twice, decrement once, print the count.",
-			StarterCode: "package main\n\nimport \"fmt\"\n\n// Define Counter struct and methods\n\nfunc main() {\n\t// Create counter, increment twice, decrement once, print\n}",
+			Prompt:      "Build a Counter struct with methods.\n\nRequirements:\n- `type Counter struct { count int }`\n- `func (c *Counter) Increment()` — use pointer receiver `*Counter`\n- `func (c *Counter) Decrement()`\n- `func (c *Counter) GetCount() int`\n- Increment twice, decrement once, print count\n- Output: `1`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Build a Counter with Increment, Decrement, and GetCount methods.\n// Use pointer receivers (*Counter) so methods can modify state.\n//\n// Expected output: 1\n\n// Define Counter struct and methods here\n\nfunc main() {\n\t// Create counter, increment twice, decrement once, print count\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\ntype Counter struct {\n\tcount int\n}\n\nfunc (c *Counter) Increment() {\n\tc.count++\n}\n\nfunc (c *Counter) Decrement() {\n\tc.count--\n}\n\nfunc (c *Counter) GetCount() int {\n\treturn c.count\n}\n\nfunc main() {\n\tc := &Counter{}\n\tc.Increment()\n\tc.Increment()\n\tc.Decrement()\n\tfmt.Println(c.GetCount())\n}",
 			ExpectedOut: "1\n",
 			Hints:       []string{"Use pointer receiver (*Counter) so methods can modify count", "Initialize with &Counter{} — count defaults to 0"},
@@ -49,8 +49,8 @@ func init() {
 		},
 		"module_export": {
 			Type:        "rewrite",
-			Prompt:      "Which of these Go function names would be exported (accessible from other packages)?\n\nfunc getData() {}\nfunc ProcessData() {}\nfunc validate() {}\nfunc HandleRequest() {}\n\nWrite a program that prints \"exported\" for each exported name and \"private\" for each non-exported name, in order.",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// Print exported/private for: getData, ProcessData, validate, HandleRequest\n}",
+			Prompt:      "Classify Go function names as exported or private.\n\nGiven: `getData`, `ProcessData`, `validate`, `HandleRequest`\n- Uppercase first letter = exported\n- Lowercase first letter = private\n- Print one per line in order\n- Output: `private`, `exported`, `private`, `exported`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// In Go, capitalization determines visibility.\n// Classify: getData, ProcessData, validate, HandleRequest\n// Print \"private\" or \"exported\" for each, one per line.\n//\n// Expected output:\n//   private\n//   exported\n//   private\n//   exported\n\nfunc main() {\n\t// Your code here\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"private\")\n\tfmt.Println(\"exported\")\n\tfmt.Println(\"private\")\n\tfmt.Println(\"exported\")\n}",
 			ExpectedOut: "private\nexported\nprivate\nexported\n",
 			Hints:       []string{"Capital first letter = exported", "Lowercase first letter = private/unexported"},

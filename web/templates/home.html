@@ -4,12 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoQuest - Learn Go from Node.js</title>
+    <title>GoQuest - Learn Go Your Way</title>
     <link rel="stylesheet" href="/static/css/main.css">
     <link rel="stylesheet" href="/static/css/components.css">
     <link rel="stylesheet" href="/static/css/animations.css">
     <link rel="stylesheet" href="/static/css/game-hud.css">
     <link rel="stylesheet" href="/static/css/inventory.css">
+    <link rel="stylesheet" href="/static/css/lang-picker.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap">
 </head>
 <body>
     {{template "nav" .}}
@@ -19,7 +21,14 @@
     <main class="quest-map">
         <div class="quest-header">
             <h1>Your Go Quest</h1>
-            <p class="quest-subtitle">Learn Go through interactive lessons. You know Node.js — now conquer Go.</p>
+            <p class="quest-subtitle">Learn Go through interactive lessons — from the language you already know.</p>
+            <div id="home-lang-switcher" class="home-lang-switcher"></div>
+        </div>
+
+        <!-- Lesson Search -->
+        <div class="search-box" id="lesson-search-box">
+            <span>&#x1F50D;</span>
+            <input type="text" id="lesson-search" placeholder="Search lessons... (e.g. arrays, channels, errors)" autocomplete="off">
         </div>
 
         <div class="phase-path" id="phase-path">
@@ -64,6 +73,24 @@
     <div class="inventory-bar" id="inventory-bar"></div>
 
     <script type="module" src="/static/js/app.js"></script>
+    <script>
+    // Lesson search/filter
+    document.getElementById('lesson-search')?.addEventListener('input', function() {
+        const q = this.value.toLowerCase().trim();
+        document.querySelectorAll('.lesson-node').forEach(node => {
+            const title = (node.querySelector('.lesson-title')?.textContent || '').toLowerCase();
+            const slug = (node.dataset.slug || '').toLowerCase();
+            const match = !q || title.includes(q) || slug.includes(q);
+            node.style.display = match ? '' : 'none';
+        });
+        // Hide phases with no visible lessons
+        document.querySelectorAll('.phase-node').forEach(phase => {
+            const visible = phase.querySelectorAll('.lesson-node[style=""], .lesson-node:not([style])').length;
+            const hidden = phase.querySelectorAll('.lesson-node[style*="none"]').length;
+            phase.style.display = (hidden > 0 && visible === 0) ? 'none' : '';
+        });
+    });
+    </script>
 </body>
 </html>
 {{end}}

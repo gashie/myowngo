@@ -55,6 +55,13 @@ export class Gamification {
         return newBadges;
     }
 
+    awardXP(amount) {
+        const state = this.progress.getState();
+        state.totalXP = (state.totalXP || 0) + amount;
+        state.level = Math.floor(Math.sqrt(state.totalXP / 25)) + 1;
+        this.progress._save();
+    }
+
     showXPPopup(amount) {
         const popup = document.getElementById('xp-popup');
         if (!popup) return;

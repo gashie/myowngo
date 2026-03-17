@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/static/css/animations.css">
     <link rel="stylesheet" href="/static/css/game-hud.css">
     <link rel="stylesheet" href="/static/css/inventory.css">
+    <link rel="stylesheet" href="/static/css/lang-picker.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
@@ -27,385 +28,356 @@
         <div class="lesson-intro-card">
             <div class="intro-lesson-number">Lesson {{.Lesson.Number}}</div>
             <h1 class="intro-lesson-title">{{.Lesson.Title}}</h1>
-            <p class="intro-description" id="intro-description">Master this concept by completing all 3 steps: Practice, Challenge, and Test.</p>
+            <p class="intro-description">Master this concept by completing all steps: Learn, Practice, Challenge, and Test.</p>
             <div class="intro-rewards">
                 <div class="intro-reward-item xp">&#x2728; +{{.Lesson.XPReward}} XP</div>
                 <div class="intro-reward-item coins">&#x1FA99; +{{.Lesson.CoinReward}} Coins</div>
             </div>
             <div class="intro-buttons">
-                <button class="btn-game btn-game-run" id="btn-intro-ready">&#x2694;&#xFE0F; I'm Ready!</button>
-                <button class="btn-game btn-game-reset" id="btn-intro-skip">Skip Intro</button>
+                <button class="btn-intro-ready" id="btn-intro-ready">&#x2694;&#xFE0F; I'm Ready!</button>
+                <button class="btn-intro-skip" id="btn-intro-skip">Skip Intro</button>
             </div>
         </div>
     </div>
 
-    <!-- ===== MAIN GAME LAYOUT ===== -->
-    <main class="game-layout" data-layout="classic" data-slug="{{.Lesson.Slug}}" data-phase="{{.Phase.Slug}}">
+    <!-- ===== LESSON BAR ===== -->
+    <div class="lesson-bar">
+        <div class="lesson-bar-left">
+            {{if .Lesson.PrevSlug}}<a href="/lesson/{{.Lesson.PrevSlug}}" class="bar-nav-link">&#x25C0; Prev</a>{{end}}
+            <a href="/" class="bar-nav-link">Quest Map</a>
+        </div>
+        <div class="lesson-bar-center">
+            <span class="bar-lesson-title">Lesson {{.Lesson.Number}}: {{.Lesson.Title}}</span>
+            <div class="bar-rewards">
+                <span class="bar-reward xp">&#x2728; +{{.Lesson.XPReward}} XP</span>
+                <span class="bar-reward coins">&#x1FA99; +{{.Lesson.CoinReward}} Coins</span>
+            </div>
+            <div class="mode-toggle" id="mode-toggle">
+                <button class="mode-btn active" id="btn-read-mode">&#x1F4D6; Read</button>
+                <button class="mode-btn" id="btn-tutor-mode">&#x1F9D9; Tutor</button>
+            </div>
+        </div>
+        <div class="lesson-bar-right">
+            <span id="lesson-lang-switcher" class="bar-lang-switcher"></span>
+            <span class="bar-hud-item">&#x2694;&#xFE0F; <span id="mini-level">Lvl 1</span></span>
+            <span class="bar-hud-item">&#x2728; <span id="mini-xp">0</span></span>
+            <span class="bar-hud-item">&#x1FA99; <span id="mini-coins">0</span></span>
+            {{if .Lesson.NextSlug}}<a href="/lesson/{{.Lesson.NextSlug}}" class="bar-nav-link next locked" id="btn-next-lesson">&#x1F512; Next</a>{{end}}
+        </div>
+    </div>
 
-        <!-- ============ TUTORIAL PANEL (left) ============ -->
-        <div class="tutorial-panel">
-            <div class="panel-titlebar">
-                <div class="panel-titlebar-left"><span>&#x1F4D6;</span> Tutorial</div>
-                <div class="panel-titlebar-right">
-                    <div class="editor-mini-hud">
-                        <span class="mini-hud-item mini-hud-level"><span class="hud-icon">&#x2694;&#xFE0F;</span> <span id="mini-level">Lvl 1</span></span>
-                        <span class="mini-hud-item mini-hud-xp"><span class="hud-icon">&#x2728;</span> <span id="mini-xp">0</span></span>
-                        <span class="mini-hud-item mini-hud-coins"><span class="hud-icon">&#x1FA99;</span> <span id="mini-coins">0</span></span>
-                    </div>
+    <!-- ===== MAIN TWO-COLUMN LAYOUT ===== -->
+    <div class="lesson-page" data-slug="{{.Lesson.Slug}}" data-phase="{{.Phase.Slug}}">
+
+        <!-- ====== LEFT: MAIN CONTENT AREA ====== -->
+        <div class="lesson-main" id="lesson-main">
+
+            <!-- STEP: MISSION (tutorial — scrollable, first step) -->
+            <div class="step-content tutorial-step active" id="step-mission">
+                <div class="step-header">
+                    <span class="step-badge mission">&#x1F4CB; MISSION</span>
+                    <h2>Mission Briefing</h2>
+                </div>
+                <div class="step-body" id="mission-body">
+                    <!-- Populated by JS -->
+                </div>
+                <div class="step-footer">
+                    <button class="btn-step-next" id="btn-start-tutorial">Start Tutorial &#x25B6;</button>
                 </div>
             </div>
-            <div class="panel-tab-bar" id="tutorial-tab-bar">
-                <button class="panel-tab active" data-tab="learn">&#x1F4D6; Learn</button>
-                <button class="panel-tab locked" data-tab="compare">&#x2696;&#xFE0F; Compare</button>
-            </div>
-            <div class="panel-content">
-                <!-- LEARN TAB -->
-                <div class="tab-panel active" id="tab-learn">
-                    <div class="learn-panel-content">
-                        <div class="learn-pages" id="learn-pages"></div>
-                        <div class="learn-page-indicator" id="learn-page-indicator"></div>
-                    </div>
-                    <div class="panel-buttons">
-                        <button class="btn-game btn-game-reset" id="btn-learn-prev" disabled>&#x25C0; Prev</button>
-                        <button class="btn-game btn-game-run" id="btn-learn-next">Next &#x25B6;</button>
-                    </div>
+
+            <!-- STEP: LEARN (tutorial — scrollable) -->
+            <div class="step-content tutorial-step" id="step-learn">
+                <div class="step-header">
+                    <span class="step-badge tutorial">&#x1F4D6; TUTORIAL</span>
+                    <h2>Step 1: Learn how it works</h2>
                 </div>
-                <!-- COMPARE TAB -->
-                <div class="tab-panel" id="tab-compare">
-                    <div class="compare-step-label" id="compare-step-label">Step 1: See how other languages do it</div>
-                    <div class="compare-panel-grid single-mode" id="compare-grid">
-                        <div class="compare-code-pane" id="compare-pane-other">
-                            <div class="pane-label" style="background:rgba(245,158,11,0.2); color:#fbbf24;">Other Language</div>
-                            <pre><code class="language-javascript" id="compare-other-code"></code></pre>
+                <div class="step-body" id="learn-body">
+                    <!-- Populated by JS: explanation + nodeCode + teacher tips -->
+                </div>
+                <div class="step-footer">
+                    <button class="btn-step-next" id="btn-next-compare">Next: Compare &#x25B6;</button>
+                </div>
+            </div>
+
+            <!-- STEP: COMPARE (tutorial — scrollable, multi-language) -->
+            <div class="step-content tutorial-step" id="step-compare">
+                <div class="step-header">
+                    <span class="step-badge tutorial">&#x1F4D6; TUTORIAL</span>
+                    <h2 id="compare-heading">Compare: Source vs Go</h2>
+                </div>
+                <div class="step-body">
+                    <div id="compare-lang-switcher" class="compare-lang-switcher"></div>
+                    <div class="compare-grid">
+                        <div class="compare-pane">
+                            <div class="compare-label source" id="compare-source-label">&#x2B22; SOURCE</div>
+                            <pre><code id="compare-source-code"></code></pre>
                         </div>
-                        <div class="compare-code-pane hidden-pane" id="compare-pane-go">
-                            <div class="pane-label" style="background:rgba(0,173,216,0.2); color:var(--accent-go);">Go</div>
+                        <div class="compare-pane">
+                            <div class="compare-label go">&#x25C8; GO</div>
                             <pre><code class="language-go" id="compare-go-code"></code></pre>
                         </div>
                     </div>
-                    <div class="panel-buttons">
-                        <button class="btn-game btn-game-run" id="btn-compare-next">Next Step &#x25B6;</button>
+                    <div class="annotations-list" id="annotations-list"></div>
+                </div>
+                <div class="step-footer">
+                    <button class="btn-step-next" id="btn-next-practice">Next: Practice &#x25B6;</button>
+                </div>
+            </div>
+
+            <!-- STEP: PRACTICE (coding — fixed height, no scroll) -->
+            <div class="step-content coding-step" id="step-practice">
+                <div class="step-instruction">
+                    <div class="step-header">
+                        <span class="step-badge sandbox">&#x1F525; PRACTICE</span>
+                        <span class="step-type-tag sandbox">SANDBOX</span>
+                    </div>
+                    <p class="step-description" id="practice-description"></p>
+                    <div class="practice-checklist" id="practice-checklist">
+                        <label class="check-item"><input type="checkbox" class="pcheck" data-check="read"> Read the code</label>
+                        <label class="check-item"><input type="checkbox" class="pcheck" data-check="run"> Run it</label>
+                        <label class="check-item"><input type="checkbox" class="pcheck" data-check="modify"> Modify &amp; re-run</label>
+                        <label class="check-item"><input type="checkbox" class="pcheck" data-check="understand"> Understand each line</label>
+                    </div>
+                </div>
+                <div class="editor-frame">
+                    <div class="editor-wrapper" id="practice-editor"></div>
+                </div>
+                <div class="editor-btns">
+                    <button class="ebtn ebtn-run" id="btn-practice-run">&#x25B6; RUN CODE</button>
+                    <button class="ebtn ebtn-fmt" id="btn-practice-fmt">&#x2728; FORMAT</button>
+                    <button class="ebtn ebtn-reset" id="btn-practice-reset">&#x21BA; RESET</button>
+                    <button class="ebtn ebtn-ghost" id="btn-practice-solution">&#x1F440; SOLUTION</button>
+                </div>
+                <div class="console-frame">
+                    <div class="console-panel">
+                        <div class="console-hdr"><span>&#x276F; OUTPUT</span><button class="console-clear" data-target="practice-console-out">Clear</button></div>
+                        <div class="console-out" id="practice-console-out"><div class="cline info"><span class="cprompt">$</span> Ready...</div></div>
+                    </div>
+                </div>
+                <div class="step-next-row">
+                    <button class="btn-step-next disabled" id="btn-next-challenge" disabled>Next: Challenge &#x25B6;</button>
+                </div>
+            </div>
+
+            <!-- STEP: CHALLENGE (coding — fixed height, no scroll) -->
+            <div class="step-content coding-step" id="step-challenge">
+                <div class="step-instruction">
+                    <div class="step-header">
+                        <span class="step-badge challenge">&#x2694;&#xFE0F; CHALLENGE</span>
+                        <span class="step-type-tag" id="challenge-type-tag">BUILD</span>
+                        <span class="challenge-timer" id="challenge-timer">0:00</span>
+                        <div class="brief-rewards">
+                            <span class="bar-reward xp" id="challenge-xp">+0 XP</span>
+                            <span class="bar-reward coins" id="challenge-coins">+0 Coins</span>
+                        </div>
+                    </div>
+                    <div class="test-obj" id="challenge-prompt-line"></div>
+                </div>
+                <div class="editor-frame">
+                    <div class="editor-wrapper" id="challenge-editor"></div>
+                </div>
+                <div class="editor-btns">
+                    <button class="ebtn ebtn-run" id="btn-challenge-submit">&#x25B6; SUBMIT</button>
+                    <button class="ebtn ebtn-fmt" id="btn-challenge-fmt">&#x2728; FORMAT</button>
+                    <button class="ebtn ebtn-hint" id="btn-challenge-hint">&#x1F4A1; HINT (2 coins)</button>
+                    <button class="ebtn ebtn-ghost" id="btn-challenge-solution">&#x1F440; SOLUTION (-50% XP)</button>
+                    <button class="ebtn ebtn-reset" id="btn-challenge-reset">&#x21BA; RESET</button>
+                </div>
+                <div class="console-frame">
+                    <div class="challenge-result" id="challenge-result"></div>
+                    <div class="challenge-hints" id="challenge-hints"></div>
+                    <div class="console-panel">
+                        <div class="console-hdr"><span>&#x276F; OUTPUT</span><button class="console-clear" data-target="challenge-console-out">Clear</button></div>
+                        <div class="console-out" id="challenge-console-out"><div class="cline info"><span class="cprompt">$</span> Submit when ready...</div></div>
+                    </div>
+                </div>
+                <div class="step-next-row">
+                    <button class="btn-step-next disabled" id="btn-next-test" disabled>Next: Final Test &#x25B6;</button>
+                </div>
+            </div>
+
+            <!-- STEP: TEST (coding — fixed height, no scroll) -->
+            <div class="step-content coding-step" id="step-test">
+                <div class="step-instruction">
+                    <div class="step-header">
+                        <span class="step-badge exam">&#x1F9EA; FINAL TEST</span>
+                        <span class="step-type-tag exam">EXAM</span>
+                        <span class="test-warning-inline">&#x26A0; Tabs locked</span>
+                    </div>
+                    <div class="test-objectives" id="test-objectives"></div>
+                </div>
+                <div class="editor-frame">
+                    <div class="editor-wrapper" id="test-editor"></div>
+                </div>
+                <div class="editor-btns">
+                    <button class="ebtn ebtn-run" id="btn-run-tests">&#x25B6; RUN TESTS</button>
+                </div>
+                <div class="console-frame">
+                    <div class="test-results" id="test-results"></div>
+                    <div class="console-panel">
+                        <div class="console-hdr"><span>&#x1F9EA; RESULTS</span><button class="console-clear" data-target="test-console-out">Clear</button></div>
+                        <div class="console-out" id="test-console-out"><div class="cline info"><span class="cprompt">$</span> Write your solution...</div></div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- ============ EDITOR PANEL (right) — 3 vertical columns ============ -->
-        <div class="editor-panel">
-            <div class="panel-content editor-columns">
+        </div><!-- /.lesson-main -->
 
-                <!-- Column 1: PRACTICE -->
-                <div class="step-col" id="panel-practice" data-step="practice">
-                    <div class="step-col-header">
-                        <span class="step-num">1</span>
-                        <span class="step-icon">&#x1F525;</span>
-                        <span class="step-title">PRACTICE</span>
-                        <span class="step-type-badge badge-sandbox">SANDBOX</span>
-                        <span class="step-status" id="status-practice"></span>
-                    </div>
-                    <div class="step-col-body" id="body-practice">
-                        <p class="col-briefing" id="practice-goal">Run &amp; experiment with the code.</p>
-                        <div class="practice-checklist">
-                            <label class="checklist-item" id="pcheck-read"><input type="checkbox" class="pcheck-box" data-check="read"> Read the code</label>
-                            <label class="checklist-item" id="pcheck-run"><input type="checkbox" class="pcheck-box" data-check="run"> Run it</label>
-                            <label class="checklist-item" id="pcheck-modify"><input type="checkbox" class="pcheck-box" data-check="modify"> Modify &amp; re-run</label>
-                            <label class="checklist-item" id="pcheck-understand"><input type="checkbox" class="pcheck-box" data-check="understand"> Understand each line</label>
-                        </div>
-                        <div class="editor-frame"><div id="practice-editor"></div></div>
-                        <div class="step-buttons">
-                            <button id="btn-run" class="gbtn gbtn-run">&#x25B6; RUN</button>
-                            <button id="btn-reset" class="gbtn gbtn-reset">&#x21BA;</button>
-                            <button id="btn-solution" class="gbtn gbtn-solution">&#x1F440;</button>
-                        </div>
-                        <div class="console-frame" id="practice-console-frame">
-                            <div class="console-frame-header">
-                                <span>&#x276F; OUTPUT</span>
-                                <button class="console-clear-btn" data-target="practice-console-output">Clear</button>
-                            </div>
-                            <div class="console-frame-body">
-                                <div class="console-frame-output" id="practice-console-output">
-                                    <div class="console-line info"><span class="prompt">$</span> Ready...</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <!-- ====== RIGHT: SIDEBAR ====== -->
+        <div class="lesson-sidebar" id="lesson-sidebar">
+            <div class="sidebar-title">Course Content</div>
+
+            <!-- Section: Mission -->
+            <div class="sidebar-section active" id="sec-mission" data-section="mission">
+                <div class="sidebar-section-hdr" data-section="mission">
+                    <span class="sec-icon">&#x1F4CB;</span>
+                    <span class="sec-name">Mission</span>
+                    <span class="sec-meta" id="sec-mission-meta"></span>
+                    <span class="sec-chevron">&#x25BE;</span>
                 </div>
-
-                <!-- Column 2: CHALLENGE -->
-                <div class="step-col locked" id="panel-challenge" data-step="challenge">
-                    <div class="step-col-header">
-                        <span class="step-num">2</span>
-                        <span class="step-icon">&#x2694;&#xFE0F;</span>
-                        <span class="step-title">CHALLENGE</span>
-                        <span class="step-type-badge badge-build" id="challenge-type-badge">BUILD</span>
-                        <span class="step-lock" id="lock-challenge">&#x1F512;</span>
-                        <span class="step-status" id="status-challenge"></span>
-                    </div>
-                    <div class="step-col-body" id="body-challenge">
-                        <div class="challenge-brief">
-                            <div class="challenge-brief-header">
-                                <span class="challenge-brief-type" id="challenge-brief-type">&#x1F3D7;&#xFE0F; BUILD</span>
-                                <div class="challenge-brief-rewards">
-                                    <span class="reward-tag xp" id="challenge-bonus-xp">+0 XP</span>
-                                    <span class="reward-tag coins" id="challenge-bonus-coins">+0 Coins</span>
-                                </div>
-                            </div>
-                            <p class="challenge-brief-prompt" id="challenge-prompt-text">Loading...</p>
-                        </div>
-                        <div class="editor-frame"><div id="challenge-editor"></div></div>
-                        <div class="step-buttons">
-                            <button id="btn-challenge-submit" class="gbtn gbtn-run">&#x25B6; SUBMIT</button>
-                            <button id="btn-challenge-hint" class="gbtn gbtn-hint">&#x1F4A1;</button>
-                            <button id="btn-challenge-reset" class="gbtn gbtn-reset">&#x21BA;</button>
-                        </div>
-                        <div class="challenge-result" id="challenge-result"></div>
-                        <div class="challenge-hints-area" id="challenge-hints-area"></div>
-                        <div class="console-frame" id="challenge-console-frame">
-                            <div class="console-frame-header">
-                                <span>&#x276F; OUTPUT</span>
-                                <button class="console-clear-btn" data-target="challenge-console-output">Clear</button>
-                            </div>
-                            <div class="console-frame-body">
-                                <div class="console-frame-output" id="challenge-console-output">
-                                    <div class="console-line info"><span class="prompt">$</span> Submit when ready...</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Column 3: FINAL TEST -->
-                <div class="step-col locked" id="panel-test" data-step="test">
-                    <div class="step-col-header">
-                        <span class="step-num">3</span>
-                        <span class="step-icon">&#x1F9EA;</span>
-                        <span class="step-title">TEST</span>
-                        <span class="step-type-badge badge-exam">EXAM</span>
-                        <span class="step-lock" id="lock-test">&#x1F512;</span>
-                        <span class="step-status" id="status-test"></span>
-                    </div>
-                    <div class="step-col-body" id="body-test">
-                        <div class="exam-header">
-                            <h3>Write from memory!</h3>
-                        </div>
-                        <div class="test-objectives" id="test-objectives"></div>
-                        <div class="editor-frame"><div id="test-editor"></div></div>
-                        <div class="step-buttons">
-                            <button id="btn-run-tests" class="gbtn gbtn-run">&#x25B6; TEST</button>
-                            <button id="btn-test-reset" class="gbtn gbtn-reset">&#x21BA;</button>
-                        </div>
-                        <div class="test-results" id="test-results"></div>
-                        <div class="console-frame" id="test-console-frame">
-                            <div class="console-frame-header">
-                                <span>&#x1F9EA; RESULTS</span>
-                                <button class="console-clear-btn" data-target="test-console-output">Clear</button>
-                            </div>
-                            <div class="console-frame-body">
-                                <div class="console-frame-output" id="test-console-output">
-                                    <div class="console-line info"><span class="prompt">$</span> Write your solution...</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div><!-- /.panel-content.editor-columns -->
-        </div><!-- /.editor-panel -->
-
-        <!-- ============ BOTTOM BAR: 4 grid panels ============ -->
-
-        <!-- MISSION -->
-        <div class="grid-mission">
-            <div class="panel-titlebar">
-                <div class="panel-titlebar-left"><span>&#x1F4DC;</span> Mission</div>
-            </div>
-            <div class="panel-content" style="overflow-y:auto; padding:8px 10px;">
-                <h4 class="mission-title" style="font-size:0.72rem; color:var(--text-primary); margin-bottom:4px;">{{.Lesson.Title}}</h4>
-                <div class="mission-rewards" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:6px;">
-                    <span class="reward-tag xp">&#x2728; +{{.Lesson.XPReward}} XP</span>
-                    <span class="reward-tag coins">&#x1FA99; +{{.Lesson.CoinReward}} Coins</span>
-                    <span class="reward-tag item">&#x1F381; Item</span>
-                </div>
-                <div class="mission-tips" id="teacher-tips"></div>
-            </div>
-        </div>
-
-        <!-- JOURNEY -->
-        <div class="grid-journey">
-            <div class="panel-titlebar">
-                <div class="panel-titlebar-left"><span>&#x1F30D;</span> Journey</div>
-            </div>
-            <div class="panel-content" style="overflow-y:auto; padding:8px 10px;">
-                <div class="journey-map" id="journey-map">
-                    <div class="journey-node" id="jn-0" data-done="false">
-                        <span class="jn-icon">&#x1F4D6;</span><span class="jn-label">Read</span>
-                    </div>
-                    <span class="journey-arrow">&#x2192;</span>
-                    <div class="journey-node" id="jn-1" data-done="false">
-                        <span class="jn-icon">&#x2696;&#xFE0F;</span><span class="jn-label">Compare</span>
-                    </div>
-                    <span class="journey-arrow">&#x2192;</span>
-                    <div class="journey-node active" id="jn-2" data-done="false">
-                        <span class="jn-icon">&#x1F525;</span><span class="jn-label">Practice</span>
-                    </div>
-                    <span class="journey-arrow">&#x2192;</span>
-                    <div class="journey-node" id="jn-3" data-done="false">
-                        <span class="jn-icon">&#x2694;&#xFE0F;</span><span class="jn-label">Challenge</span>
-                    </div>
-                    <span class="journey-arrow">&#x2192;</span>
-                    <div class="journey-node" id="jn-4" data-done="false">
-                        <span class="jn-icon">&#x1F9EA;</span><span class="jn-label">Test</span>
+                <div class="sidebar-items">
+                    <div class="sidebar-item active" data-step="mission">
+                        <span class="si-check" id="ic-mission">&#x25CB;</span>
+                        <span class="si-label">Briefing</span>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- CONSOLE -->
-        <div class="grid-console">
-            <div class="panel-titlebar">
-                <div class="panel-titlebar-left"><span>&#x1F4DF;</span> Console</div>
-                <div class="panel-titlebar-right">
-                    <button class="console-clear-btn" id="btn-clear-shared-console">Clear</button>
+            <!-- Section: Tutorial -->
+            <div class="sidebar-section" id="sec-tutorial" data-section="tutorial">
+                <div class="sidebar-section-hdr" data-section="tutorial">
+                    <span class="sec-icon">&#x1F4D6;</span>
+                    <span class="sec-name">Tutorial</span>
+                    <span class="sec-meta" id="sec-tutorial-meta">0/2</span>
+                    <span class="sec-chevron">&#x25BE;</span>
+                </div>
+                <div class="sidebar-items">
+                    <div class="sidebar-item active" data-step="learn">
+                        <span class="si-check" id="ic-learn">&#x25CB;</span>
+                        <span class="si-label">Learn</span>
+                    </div>
+                    <div class="sidebar-item" data-step="compare">
+                        <span class="si-check" id="ic-compare">&#x25CB;</span>
+                        <span class="si-label">Compare</span>
+                    </div>
                 </div>
             </div>
-            <div class="panel-content" style="overflow-y:auto; padding:4px 8px;">
-                <div class="console-output-shared" id="console-output" style="font-family:var(--font-mono); font-size:0.65rem; line-height:1.5;">
-                    <div class="console-line info"><span class="prompt">$</span> GoQuest Console v1.0</div>
-                    <div class="console-line info"><span class="prompt">$</span> Lesson: {{.Lesson.Title}}</div>
-                    <div class="console-line"><span class="prompt">$</span> Ready. Complete all steps to pass.</div>
+
+            <!-- Section: Practice -->
+            <div class="sidebar-section locked" id="sec-practice" data-section="practice">
+                <div class="sidebar-section-hdr" data-section="practice">
+                    <span class="sec-icon">&#x1F525;</span>
+                    <span class="sec-name">Practice</span>
+                    <span class="sec-badge sandbox">SANDBOX</span>
+                    <span class="sec-lock" id="lock-practice">&#x1F512;</span>
+                    <span class="sec-chevron">&#x25BE;</span>
+                </div>
+                <div class="sidebar-items">
+                    <div class="sidebar-item" data-step="practice">
+                        <span class="si-check" id="ic-practice">&#x25CB;</span>
+                        <span class="si-label">Run &amp; experiment</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- QUEST + INVENTORY -->
-        <div class="grid-quest">
-            <div class="panel-titlebar">
-                <div class="panel-titlebar-left"><span>&#x1F4CB;</span> Quests</div>
+            <!-- Section: Challenge -->
+            <div class="sidebar-section locked" id="sec-challenge" data-section="challenge">
+                <div class="sidebar-section-hdr" data-section="challenge">
+                    <span class="sec-icon">&#x2694;&#xFE0F;</span>
+                    <span class="sec-name">Challenge</span>
+                    <span class="sec-badge" id="sec-challenge-badge">BUILD</span>
+                    <span class="sec-lock" id="lock-challenge">&#x1F512;</span>
+                    <span class="sec-chevron">&#x25BE;</span>
+                </div>
+                <div class="sidebar-items">
+                    <div class="sidebar-item" data-step="challenge">
+                        <span class="si-check" id="ic-challenge">&#x25CB;</span>
+                        <span class="si-label" id="challenge-item-label">Build task</span>
+                    </div>
+                </div>
             </div>
-            <div class="panel-content" style="overflow-y:auto; padding:8px 10px;">
+
+            <!-- Section: Final Test -->
+            <div class="sidebar-section locked" id="sec-test" data-section="test">
+                <div class="sidebar-section-hdr" data-section="test">
+                    <span class="sec-icon">&#x1F9EA;</span>
+                    <span class="sec-name">Final Test</span>
+                    <span class="sec-badge exam">EXAM</span>
+                    <span class="sec-lock" id="lock-test">&#x1F512;</span>
+                    <span class="sec-chevron">&#x25BE;</span>
+                </div>
+                <div class="sidebar-items">
+                    <div class="sidebar-item" data-step="test">
+                        <span class="si-check" id="ic-test">&#x25CB;</span>
+                        <span class="si-label">Write from memory</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quests -->
+            <div class="sidebar-quests">
+                <div class="sidebar-quests-title">&#x1F4CB; Quests</div>
                 <div class="quest-checklist" id="quest-checklist">
-                    <div class="quest-row" id="quest-read">
-                        <span class="quest-check" id="qc-read">&#x25CB;</span>
-                        <span>Read explanation</span>
-                        <span class="quest-step">1/5</span>
-                    </div>
-                    <div class="quest-row" id="quest-compare">
-                        <span class="quest-check" id="qc-compare">&#x25CB;</span>
-                        <span>Compare code</span>
-                        <span class="quest-step">2/5</span>
-                    </div>
-                    <div class="quest-row" id="quest-practice">
-                        <span class="quest-check" id="qc-practice">&#x25CB;</span>
-                        <span>Write Go code</span>
-                        <span class="quest-step">3/5</span>
-                    </div>
-                    <div class="quest-row" id="quest-challenge">
-                        <span class="quest-check" id="qc-challenge">&#x25CB;</span>
-                        <span>Solve challenge</span>
-                        <span class="quest-step">4/5</span>
-                    </div>
-                    <div class="quest-row" id="quest-test">
-                        <span class="quest-check" id="qc-test">&#x25CB;</span>
-                        <span>Pass tests</span>
-                        <span class="quest-step">5/5</span>
-                    </div>
+                    <div class="quest-row" id="quest-read"><span class="quest-check" id="qc-read">&#x25CB;</span><span>Read explanation</span><span class="quest-step">1/5</span></div>
+                    <div class="quest-row" id="quest-compare"><span class="quest-check" id="qc-compare">&#x25CB;</span><span>Compare code</span><span class="quest-step">2/5</span></div>
+                    <div class="quest-row" id="quest-practice"><span class="quest-check" id="qc-practice">&#x25CB;</span><span>Write Go code</span><span class="quest-step">3/5</span></div>
+                    <div class="quest-row" id="quest-challenge"><span class="quest-check" id="qc-challenge">&#x25CB;</span><span>Solve challenge</span><span class="quest-step">4/5</span></div>
+                    <div class="quest-row" id="quest-test"><span class="quest-check" id="qc-test">&#x25CB;</span><span>Pass tests</span><span class="quest-step">5/5</span></div>
                 </div>
                 <div class="inv-section-label">Inventory</div>
                 <div class="inv-grid" id="inv-grid"></div>
             </div>
+
+        </div><!-- /.lesson-sidebar -->
+
+    </div><!-- /.lesson-page -->
+
+    <!-- ===== BONUS ROUND (mini-games) ===== -->
+    <div id="bonus-round" class="lesson-complete hidden">
+        <div class="complete-card" id="bonus-round-inner">
+            <!-- Populated by JS: picker or game frame -->
         </div>
+    </div>
 
-    </main>
-
-    <!-- ===== FLOATING WIZARD / GOPHER ===== -->
-    <div class="wizard-container" id="wizard-container">
-        <div class="wizard-body-wrap" id="wizard-body-wrap">
-            <svg class="gopher-svg" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="52" cy="52" rx="22" ry="22" fill="#7dd8e6" stroke="#3aafbd" stroke-width="3"/>
-                <ellipse cx="52" cy="52" rx="10" ry="10" fill="#f8a4bc"/>
-                <ellipse cx="148" cy="52" rx="22" ry="22" fill="#7dd8e6" stroke="#3aafbd" stroke-width="3"/>
-                <ellipse cx="148" cy="52" rx="10" ry="10" fill="#f8a4bc"/>
-                <path d="M 42 50 Q 100 -5 158 50" stroke="#2d3748" stroke-width="7" fill="none" stroke-linecap="round"/>
-                <rect x="28" y="42" width="22" height="26" rx="5" fill="#4299e1" stroke="#2d3748" stroke-width="4"/>
-                <rect x="150" y="42" width="22" height="26" rx="5" fill="#4299e1" stroke="#2d3748" stroke-width="4"/>
-                <ellipse cx="100" cy="82" rx="55" ry="48" fill="url(#gHead)"/>
-                <ellipse cx="76" cy="76" rx="16" ry="16" fill="#fff" stroke="#2d8a96" stroke-width="3"/>
-                <ellipse cx="124" cy="76" rx="16" ry="16" fill="#fff" stroke="#2d8a96" stroke-width="3"/>
-                <circle cx="78" cy="76" r="7" fill="#1a1a2e"/>
-                <circle cx="126" cy="76" r="7" fill="#1a1a2e"/>
-                <circle cx="82" cy="72" r="3" fill="#fff"/>
-                <circle cx="130" cy="72" r="3" fill="#fff"/>
-                <rect x="56" y="60" width="34" height="28" rx="6" fill="none" stroke="#1a202c" stroke-width="4"/>
-                <rect x="110" y="60" width="34" height="28" rx="6" fill="none" stroke="#1a202c" stroke-width="4"/>
-                <line x1="90" y1="74" x2="110" y2="74" stroke="#1a202c" stroke-width="4" stroke-linecap="round"/>
-                <ellipse cx="100" cy="98" rx="10" ry="7" fill="#e8836c"/>
-                <path d="M 90 108 Q 100 118 110 108" fill="#a0453a"/>
-                <rect x="93" y="107" width="6" height="8" rx="1" fill="#fff"/>
-                <rect x="101" y="107" width="6" height="8" rx="1" fill="#fff"/>
-                <ellipse cx="100" cy="168" rx="50" ry="55" fill="url(#gBody)"/>
-                <ellipse cx="100" cy="164" rx="32" ry="38" fill="url(#gBelly)"/>
-                <ellipse cx="42" cy="158" rx="14" ry="28" fill="#5cc8d6" transform="rotate(15, 42, 158)"/>
-                <ellipse cx="158" cy="158" rx="14" ry="28" fill="#5cc8d6" transform="rotate(-15, 158, 158)"/>
-                <ellipse cx="74" cy="222" rx="18" ry="10" fill="#4ab8c6"/>
-                <ellipse cx="126" cy="222" rx="18" ry="10" fill="#4ab8c6"/>
-                <defs>
-                    <radialGradient id="gHead" cx="50%" cy="40%">
-                        <stop offset="0%" stop-color="#8ae4f0"/>
-                        <stop offset="100%" stop-color="#5cc8d6"/>
-                    </radialGradient>
-                    <linearGradient id="gBody" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#5cc8d6"/>
-                        <stop offset="60%" stop-color="#4ab8c6"/>
-                        <stop offset="100%" stop-color="#3aa8b6"/>
-                    </linearGradient>
-                    <radialGradient id="gBelly" cx="50%" cy="40%">
-                        <stop offset="0%" stop-color="#e8f7f9"/>
-                        <stop offset="100%" stop-color="#c4e6ec"/>
-                    </radialGradient>
-                </defs>
-            </svg>
-        </div><!-- /.wizard-body-wrap -->
-        <div class="wizard-speech" id="wizard-speech" style="display:none;">
-            <button class="wizard-speech-close" id="wizard-speech-close">&times;</button>
-            <div id="wizard-speech-text"></div>
-        </div>
-    </div><!-- /.wizard-container -->
-
-    <!-- Lesson Complete Overlay -->
+    <!-- ===== LESSON COMPLETE ===== -->
     <div id="lesson-complete" class="lesson-complete hidden">
         <div class="complete-card">
-            <div class="complete-icon" style="font-size:3rem;">&#x1F3C6;</div>
-            <h2 style="background: linear-gradient(135deg, #f59e0b, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Mission Complete!</h2>
+            <div style="font-size:3rem;">&#x1F3C6;</div>
+            <h2 style="background:linear-gradient(135deg,#f59e0b,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Mission Complete!</h2>
             <div class="complete-rewards">
                 <span class="reward-xp">+<span id="total-xp-earned">0</span> XP</span>
                 <span class="reward-coins">+<span id="total-coins-earned">0</span> coins</span>
             </div>
             {{if .Lesson.NextSlug}}
-            <a href="/lesson/{{.Lesson.NextSlug}}" class="gbtn gbtn-run" style="margin-top:1rem; padding: 12px 32px; font-size: 1.1rem;">Next Level &#x25B6;</a>
+            <a href="/lesson/{{.Lesson.NextSlug}}" class="btn-intro-ready" style="margin-top:1rem;padding:12px 32px;font-size:1rem;text-decoration:none;display:inline-block;">Next Level &#x25B6;</a>
             {{else}}
-            <a href="/" class="gbtn gbtn-run" style="margin-top:1rem; padding: 12px 32px; font-size: 1.1rem;">Quest Map &#x25B6;</a>
+            <a href="/" class="btn-intro-ready" style="margin-top:1rem;padding:12px 32px;font-size:1rem;text-decoration:none;display:inline-block;">Quest Map &#x25B6;</a>
             {{end}}
         </div>
     </div>
 
     {{if not .Lesson.Playable}}
-    <div class="view-only-banner" style="position:fixed; bottom:44px; left:50%; transform:translateX(-50%); z-index:200; background:var(--accent-warning); color:#1a1a1a; padding:6px 20px; border-radius:4px; font-size:0.8rem;">
-        This lesson requires system resources not available in the browser.
-    </div>
+    <div class="view-only-banner">This lesson requires system resources not available in the browser.</div>
     {{end}}
 
-    <!-- Bottom Toolbar with Layout Switcher -->
-    <div class="game-toolbar">
-        <span style="font-size:0.75rem; color:var(--text-muted);">Lesson {{.Lesson.Number}}: {{.Lesson.Title}}</span>
-        <div class="layout-switcher" id="layout-switcher">
-            <button class="layout-btn active" data-layout="classic" title="Classic: Tutorial + Editor">&#x1F4D0; Classic</button>
-            <button class="layout-btn" data-layout="tutorial" title="Tutorial: Full tutorial view">&#x1F4D6; Tutorial</button>
-            <button class="layout-btn" data-layout="editor" title="Editor: Full editor view">&#x1F4BB; Editor</button>
+    <!-- ===== KEYBOARD SHORTCUTS HINT ===== -->
+    <div class="shortcuts-hint">
+        <kbd>Ctrl</kbd>+<kbd>Enter</kbd> Run/Submit &middot;
+        <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd> Hint &middot;
+        <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> Reset
+    </div>
+
+    <!-- ===== WIZARD CHATHEAD (coding steps only — tiny static icon) ===== -->
+    <div class="wizard-chathead" id="wizard-chathead">
+        <div class="chathead-bubble" id="chathead-bubble">
+            <span id="chathead-text">Click Run to see what happens!</span>
         </div>
-        <div class="toolbar-nav">
-            {{if .Lesson.PrevSlug}}<a href="/lesson/{{.Lesson.PrevSlug}}">&#x25C0; Prev</a>{{end}}
-            <a href="/">Quest Map</a>
-            {{if .Lesson.NextSlug}}<a href="/lesson/{{.Lesson.NextSlug}}" class="toolbar-next-lesson locked" id="btn-next-lesson">&#x1F512; Next</a>{{end}}
+        <div class="chathead-face">
+            <div class="ch-eye left"><div class="ch-pupil"></div></div>
+            <div class="ch-eye right"><div class="ch-pupil"></div></div>
+            <div class="ch-nose"></div>
+            <div class="ch-teeth"><div class="ch-tooth"></div><div class="ch-tooth"></div></div>
         </div>
     </div>
 
@@ -414,9 +386,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-go.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup-templating.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/go/go.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+    <script>
+    window.onerror = function(msg, url, line, col, err) {
+        var d = document.createElement('div');
+        d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:white;padding:10px;z-index:99999;font-family:monospace;font-size:12px;white-space:pre-wrap;max-height:200px;overflow:auto;';
+        d.textContent = 'JS ERROR: ' + msg + '\nat ' + url + ':' + line + ':' + col + '\n' + (err && err.stack ? err.stack : '');
+        document.body.prepend(d);
+    };
+    window.addEventListener('unhandledrejection', function(e) {
+        var d = document.createElement('div');
+        d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:white;padding:10px;z-index:99999;font-family:monospace;font-size:12px;';
+        d.textContent = 'UNHANDLED PROMISE: ' + (e.reason && e.reason.stack ? e.reason.stack : e.reason);
+        document.body.prepend(d);
+    });
+    </script>
     <script type="module" src="/static/js/modules/lessonView.js"></script>
 </body>
 </html>

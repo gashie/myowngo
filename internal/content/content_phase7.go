@@ -43,8 +43,8 @@ func init() {
 	registerChallenges(map[string]Challenge{
 		"json": {
 			Type:        "build",
-			Prompt:      "Define a struct Book with Title and Author fields (with json tags). Marshal it to JSON and print the JSON string.",
-			StarterCode: "package main\n\nimport (\n\t\"encoding/json\"\n\t\"fmt\"\n)\n\n// Define Book struct with json tags\n\nfunc main() {\n\t// Create a book and marshal to JSON\n}",
+			Prompt:      "Marshal a struct to JSON and print it.\n\nRequirements:\n- Define `type Book struct` with `Title` and `Author` string fields\n- Add json tags: `` `json:\"title\"` `` and `` `json:\"author\"` ``\n- Create a Book and use `json.Marshal` to convert to JSON bytes\n- Print with `fmt.Println(string(data))`\n- Output: `{\"title\":\"Go in Action\",\"author\":\"William Kennedy\"}`",
+			StarterCode: "package main\n\nimport (\n\t\"encoding/json\"\n\t\"fmt\"\n)\n\n// Define a Book struct with json tags, create one, and marshal it.\n// Struct tags like `json:\"title\"` control the JSON key names.\n//\n// Expected output: {\"title\":\"Go in Action\",\"author\":\"William Kennedy\"}\n\n// Define Book struct with json tags here\n\nfunc main() {\n\t// Create a book and marshal to JSON\n}",
 			Solution:    "package main\n\nimport (\n\t\"encoding/json\"\n\t\"fmt\"\n)\n\ntype Book struct {\n\tTitle  string `json:\"title\"`\n\tAuthor string `json:\"author\"`\n}\n\nfunc main() {\n\tb := Book{Title: \"Go in Action\", Author: \"William Kennedy\"}\n\tdata, _ := json.Marshal(b)\n\tfmt.Println(string(data))\n}",
 			ExpectedOut: "{\"title\":\"Go in Action\",\"author\":\"William Kennedy\"}\n",
 			Hints:       []string{"Use struct tags: `json:\"fieldname\"`", "json.Marshal returns []byte — convert to string"},
@@ -53,8 +53,8 @@ func init() {
 		},
 		"url_parse": {
 			Type:        "build",
-			Prompt:      "Parse the URL \"https://example.com:8080/api/users?page=2\" and print the scheme, hostname, port, and path, each on a new line.",
-			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/url\"\n)\n\nfunc main() {\n\t// Parse URL and print parts\n}",
+			Prompt:      "Parse a URL and print its parts.\n\nRequirements:\n- Use `url.Parse(\"https://example.com:8080/api/users?page=2\")`\n- Print scheme, hostname, port, path — each on its own line\n- Output: `https`, `example.com`, `8080`, `/api/users` (4 lines)",
+			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"net/url\"\n)\n\n// Parse a URL and print its scheme, hostname, port, and path.\n//\n// Expected output:\n//   https\n//   example.com\n//   8080\n//   /api/users\n\nfunc main() {\n\t// Your code here\n}",
 			Solution:    "package main\n\nimport (\n\t\"fmt\"\n\t\"net/url\"\n)\n\nfunc main() {\n\tu, _ := url.Parse(\"https://example.com:8080/api/users?page=2\")\n\tfmt.Println(u.Scheme)\n\tfmt.Println(u.Hostname())\n\tfmt.Println(u.Port())\n\tfmt.Println(u.Path)\n}",
 			ExpectedOut: "https\nexample.com\n8080\n/api/users\n",
 			Hints:       []string{"url.Parse returns *url.URL", "Use .Hostname() and .Port() methods"},

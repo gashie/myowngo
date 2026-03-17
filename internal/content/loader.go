@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-// LoadCurriculum reads all .js/.go file pairs from examplesDir
+// LoadCurriculum reads all source-language/.go file pairs from examplesDir
 // and assembles them into the full Curriculum using CurriculumDef().
 func LoadCurriculum(examplesDir string) (*Curriculum, error) {
 	defs := CurriculumDef()
@@ -24,21 +24,39 @@ func LoadCurriculum(examplesDir string) (*Curriculum, error) {
 		}
 
 		for orderIdx, lessonDef := range phaseDef.LessonSlugs {
-			var jsCode, goCode []byte
+			var goCode []byte
+			sourceCodes := map[string]string{}
 
 			if !lessonDef.Project {
-				// File-based lesson — read from examples directory
-				jsPath := filepath.Join(examplesDir, lessonDef.Slug+".js")
+				// Read Go code (required)
 				goPath := filepath.Join(examplesDir, lessonDef.Slug+".go")
-
 				var err error
-				jsCode, err = os.ReadFile(jsPath)
-				if err != nil {
-					return nil, fmt.Errorf("reading %s: %w", jsPath, err)
-				}
 				goCode, err = os.ReadFile(goPath)
 				if err != nil {
 					return nil, fmt.Errorf("reading %s: %w", goPath, err)
+				}
+
+				// Read JS code (required — original source)
+				jsPath := filepath.Join(examplesDir, lessonDef.Slug+".js")
+				jsCode, err := os.ReadFile(jsPath)
+				if err != nil {
+					return nil, fmt.Errorf("reading %s: %w", jsPath, err)
+				}
+				sourceCodes["javascript"] = string(jsCode)
+
+				// Read optional source language files (.py, .cs, .java, .php)
+				optionalExts := map[string]string{
+					"python": ".py",
+					"csharp": ".cs",
+					"java":   ".java",
+					"php":    ".php",
+				}
+				for langID, ext := range optionalExts {
+					langPath := filepath.Join(examplesDir, lessonDef.Slug+ext)
+					data, err := os.ReadFile(langPath)
+					if err == nil {
+						sourceCodes[langID] = string(data)
+					}
 				}
 			}
 			// Project-based lessons get their code from GetExplanation/GetChallenge
@@ -50,8 +68,9 @@ func LoadCurriculum(examplesDir string) (*Curriculum, error) {
 				PhaseID:     phaseIdx + 1,
 				Order:       orderIdx + 1,
 				Number:      fmt.Sprintf("%d.%d", phaseIdx+1, orderIdx+1),
-				NodeCode:    string(jsCode),
+				NodeCode:    sourceCodes["javascript"],
 				GoCode:      string(goCode),
+				SourceCodes: sourceCodes,
 				XPReward:    lessonDef.XP,
 				CoinReward:  lessonDef.XP / 2,
 				Playable:    lessonDef.Playable,

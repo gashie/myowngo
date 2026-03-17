@@ -212,13 +212,32 @@ In Go, this is mainly used with **goroutines**: ` + "`go func() { ... }()`" + ``
 	registerChallenges(map[string]Challenge{
 		"print": {
 			Type:   "rewrite",
-			Prompt: "Rewrite this Node.js code in Go:\n\nconsole.log('Hello, GoQuest!')\nconsole.log('You have %d lives', 3)",
+			Prompt: "Rewrite this Node.js code in Go:\n\n```js\nconsole.log('Hello, GoQuest!')\nconsole.log('You have %d lives', 3)\n```\n\nRequirements:\n- Use `fmt.Println(\"Hello, GoQuest!\")` for the first line (adds newline automatically)\n- Use `fmt.Printf(\"You have %d lives\\n\", 3)` for the second line (format verb `%d` for integer, add `\\n` yourself)\n- Output must be exactly two lines:\n  - `Hello, GoQuest!`\n  - `You have 3 lives`",
 			StarterCode: `package main
 
 import "fmt"
 
+/*
+ * CHALLENGE: Rewrite console.log to Go
+ *
+ * Rewrite these two JavaScript lines in Go:
+ *   console.log('Hello, GoQuest!')        → use fmt.Println("Hello, GoQuest!")
+ *   console.log('You have %d lives', 3)   → use fmt.Printf("You have %d lives\n", 3)
+ *
+ * fmt.Println adds a newline automatically.
+ * fmt.Printf does NOT — you must add \n yourself.
+ * %d is the format verb for integers.
+ *
+ * Expected output (exactly):
+ *   Hello, GoQuest!
+ *   You have 3 lives
+ */
+
 func main() {
-	// Your code here
+	// Line 1: use fmt.Println to print "Hello, GoQuest!"
+
+	// Line 2: use fmt.Printf with %d to print "You have 3 lives"
+
 }`,
 			Solution: `package main
 
@@ -235,10 +254,24 @@ func main() {
 		},
 		"variables": {
 			Type:   "fill_blank",
-			Prompt: "Fill in the blanks to declare variables in Go.\nReplace ___ with the correct Go keyword.",
+			Prompt: "Fill in the blanks to declare variables in Go.\nReplace `___` with the correct Go keyword.\n\nRequirements:\n- Use `var` for the explicit type declaration\n- Use `:=` for the short variable declaration\n- Use `const` for the constant\n- The final `fmt.Println(name, age, isActive)` prints all three space-separated on one line: `GoQuest 5 true`",
 			StarterCode: `package main
 
 import "fmt"
+
+/*
+ * CHALLENGE: Fill in the blanks
+ *
+ * Replace each ___ with the correct Go keyword:
+ *   ___ name string = "GoQuest"   → use 'var' (explicit type declaration)
+ *   age ___ 5                     → use ':=' (short declaration with type inference)
+ *   ___ isActive = true           → use 'const' (constant — value never changes)
+ *
+ * fmt.Println(name, age, isActive) prints all values separated by spaces.
+ *
+ * Expected output (exactly):
+ *   GoQuest 5 true
+ */
 
 func main() {
 	___ name string = "GoQuest"
@@ -263,13 +296,33 @@ func main() {
 		},
 		"for_loop": {
 			Type:   "build",
-			Prompt: "Write a Go program that prints numbers 1 to 10, each on a new line.",
+			Prompt: "Write a Go program that prints numbers 1 to 10.\n\nRequirements:\n- Use a `for` loop with `i := 1; i <= 10; i++`\n- Use `fmt.Println(i)` inside the loop — this prints one number per line with a newline after each\n- Output must be exactly 10 lines: `1` then `2` then `3` ... then `10`",
 			StarterCode: `package main
 
 import "fmt"
 
+/*
+ * CHALLENGE: Print numbers 1 to 10
+ *
+ * Use a classic for loop:
+ *   for i := 1; i <= 10; i++ {
+ *       fmt.Println(i)
+ *   }
+ *
+ * Go only has 'for' — no while, no do-while.
+ * fmt.Println(i) prints the number followed by a newline.
+ *
+ * Expected output (exactly 10 lines):
+ *   1
+ *   2
+ *   3
+ *   ...
+ *   10
+ */
+
 func main() {
-	// Write a for loop that prints 1 through 10
+	// Write a for loop: for i := 1; i <= 10; i++ { ... }
+
 }`,
 			Solution: `package main
 
@@ -287,13 +340,33 @@ func main() {
 		},
 		"ifelse": {
 			Type:   "rewrite",
-			Prompt: "Rewrite this Node.js code in Go:\n\nconst age = 20;\nif (age >= 18) {\n  console.log('adult');\n} else {\n  console.log('minor');\n}",
+			Prompt: "Convert JS if/else to Go.\n\nJavaScript:\n```js\nconst age = 20;\nif (age >= 18) { console.log('adult'); } else { console.log('minor'); }\n```\n\nRequirements:\n- Declare `age := 20` using short declaration\n- Use `if age >= 18 {` — no parentheses around the condition\n- Use `fmt.Println(\"adult\")` or `fmt.Println(\"minor\")`\n- Output: `adult`",
 			StarterCode: `package main
 
 import "fmt"
 
+/*
+ * CHALLENGE: Rewrite JS if/else to Go
+ *
+ * JavaScript version:
+ *   const age = 20;
+ *   if (age >= 18) { console.log('adult'); }
+ *   else { console.log('minor'); }
+ *
+ * Go version differences:
+ *   - Use := instead of const (short declaration)
+ *   - No parentheses around the condition: if age >= 18 {
+ *   - Opening brace { MUST be on the same line as if/else
+ *   - Use fmt.Println("adult") or fmt.Println("minor")
+ *
+ * Since age is 20 (>= 18), the output must be exactly:
+ *   adult
+ */
+
 func main() {
-	// Declare age and use if/else to print "adult" or "minor"
+	// Step 1: declare age := 20
+	// Step 2: if age >= 18 { fmt.Println("adult") } else { fmt.Println("minor") }
+
 }`,
 			Solution: `package main
 
@@ -314,13 +387,34 @@ func main() {
 		},
 		"switch": {
 			Type:   "rewrite",
-			Prompt: "Rewrite this switch in Go:\n\nconst day = 'monday';\nswitch(day) {\n  case 'monday': console.log('Start of week'); break;\n  case 'friday': console.log('TGIF'); break;\n  default: console.log('Regular day');\n}",
+			Prompt: "Convert JS switch to Go.\n\nJavaScript:\n```js\nswitch(day) { case 'monday': console.log('Start of week'); break; ... }\n```\n\nRequirements:\n- Declare `day := \"monday\"`\n- Use `switch day {` — no parentheses, no break needed in Go\n- Use `fmt.Println` to print the matching message\n- Output: `Start of week`",
 			StarterCode: `package main
 
 import "fmt"
 
+/*
+ * CHALLENGE: Rewrite JS switch to Go
+ *
+ * JavaScript version:
+ *   switch(day) {
+ *     case 'monday': console.log('Start of week'); break;
+ *     case 'friday': console.log('TGIF'); break;
+ *     default: console.log('Regular day');
+ *   }
+ *
+ * Go differences:
+ *   - No parentheses: switch day {
+ *   - No break needed — Go stops after the matching case automatically
+ *   - Cases use fmt.Println to print the message
+ *
+ * Since day is "monday", the output must be exactly:
+ *   Start of week
+ */
+
 func main() {
-	// Write a switch statement for day
+	// Step 1: declare day := "monday"
+	// Step 2: switch day { case "monday": ... case "friday": ... default: ... }
+
 }`,
 			Solution: `package main
 
@@ -344,15 +438,34 @@ func main() {
 		},
 		"functions": {
 			Type:   "build",
-			Prompt: "Write a Go function called 'add' that takes two integers and returns their sum. Then call it in main with add(3, 5) and print the result.",
+			Prompt: "Write a Go function called `add` that takes two integers and returns their sum.\n\nRequirements:\n- Define `func add(a, b int) int` that returns `a + b`\n- In main, call `fmt.Println(add(3, 5))` — this prints the result on its own line\n- Output must be exactly one line: `8`",
 			StarterCode: `package main
 
 import "fmt"
 
-// Write your add function here
+/*
+ * CHALLENGE: Write an add function
+ *
+ * Define a function with this signature:
+ *   func add(a, b int) int
+ *
+ * It should return a + b.
+ *
+ * In Go, parameter types come AFTER the name.
+ * When params share a type: (a, b int) instead of (a int, b int)
+ * Return type goes after the parameters: func add(a, b int) int
+ *
+ * Then in main, call: fmt.Println(add(3, 5))
+ *
+ * Expected output (exactly):
+ *   8
+ */
+
+// Write your add function here: func add(a, b int) int { ... }
 
 func main() {
-	// Call add(3, 5) and print the result
+	// Print the result of add(3, 5)
+
 }`,
 			Solution: `package main
 
@@ -372,10 +485,24 @@ func main() {
 		},
 		"arrays": {
 			Type:   "fix_bug",
-			Prompt: "This Go code has 2 bugs. Fix them so it compiles and runs correctly.",
+			Prompt: "This Go code has 2 bugs. Fix them so it compiles and runs correctly.\n\nRequirements:\n- Fix the slice literal syntax (should be `[]int{...}` not `[int]{...}`)\n- Fix the missing closing parenthesis on the `make()` call\n- The code uses `fmt.Println` to print each slice — output format is `[1 2 3 4 5]` (space-separated, in brackets)\n- Output must be exactly two lines:\n  - `[1 2 3 4 5]`\n  - `[2 4 6 8 10]`",
 			StarterCode: `package main
 
 import "fmt"
+
+/*
+ * CHALLENGE: Fix 2 bugs in this code
+ *
+ * Bug 1 (line below): [int]{...} is wrong.
+ *   Fix: slice literals use []int{...} (square brackets before type)
+ *
+ * Bug 2 (further below): make([]int, len(numbers) is missing a closing ')'
+ *   Fix: make([]int, len(numbers))
+ *
+ * Expected output (exactly 2 lines):
+ *   [1 2 3 4 5]
+ *   [2 4 6 8 10]
+ */
 
 func main() {
 	numbers := [int]{1, 2, 3, 4, 5}
@@ -410,25 +537,32 @@ func main() {
 
 	registerTests(map[string][]TestCase{
 		"print": {
-			{Name: "Prints hello message", ExpectedOut: "Hello, GoQuest!\nYou have 3 lives\n"},
+			{Name: "Use fmt.Println to print 'Go is fun!' and fmt.Printf to print 'Version: 1.21' (with %s and \\n)", ExpectedOut: "Go is fun!\nVersion: 1.21\n"},
+			{Name: "Use fmt.Println to print 'Hello' and fmt.Printf with %d to print 'Count: 42'", ExpectedOut: "Hello\nCount: 42\n"},
+			{Name: "Use fmt.Println to print 'GoQuest' and fmt.Printf with %s to print 'Lang: Go'", ExpectedOut: "GoQuest\nLang: Go\n"},
 		},
 		"for_loop": {
-			{Name: "Prints 1 to 10", ExpectedOut: "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n"},
+			{Name: "Use a for loop to print even numbers from 2 to 20, each on its own line using fmt.Println", ExpectedOut: "2\n4\n6\n8\n10\n12\n14\n16\n18\n20\n"},
+			{Name: "Use a for loop to print numbers 5 to 1 (countdown), each on its own line using fmt.Println", ExpectedOut: "5\n4\n3\n2\n1\n"},
+			{Name: "Use a for loop to print multiples of 3 from 3 to 15, each on its own line using fmt.Println", ExpectedOut: "3\n6\n9\n12\n15\n"},
 		},
 		"functions": {
-			{Name: "add(3, 5) returns 8", ExpectedOut: "8\n"},
-			{Name: "add(0, 0) returns 0", ExpectedOut: "0\n", WrapperCode: `func main() { fmt.Println(add(0, 0)) }`},
-			{Name: "add(-1, 1) returns 0", ExpectedOut: "0\n", WrapperCode: `func main() { fmt.Println(add(-1, 1)) }`},
-			{Name: "add(100, 200) returns 300", ExpectedOut: "300\n", WrapperCode: `func main() { fmt.Println(add(100, 200)) }`},
+			{Name: "Write func multiply(a, b int) int that returns a * b. Print multiply(6, 7) using fmt.Println", ExpectedOut: "42\n"},
+			{Name: "multiply(0, 5) returns 0", ExpectedOut: "0\n", WrapperCode: `func main() { fmt.Println(multiply(0, 5)) }`},
+			{Name: "multiply(-3, 4) returns -12", ExpectedOut: "-12\n", WrapperCode: `func main() { fmt.Println(multiply(-3, 4)) }`},
+			{Name: "multiply(10, 10) returns 100", ExpectedOut: "100\n", WrapperCode: `func main() { fmt.Println(multiply(10, 10)) }`},
 		},
 		"variables": {
-			{Name: "Declares and prints variables", ExpectedOut: "GoQuest 5 true\n"},
+			{Name: "Declare lang := \"Go\", year := 2009, compiled := true. Print all three with fmt.Println(lang, year, compiled)", ExpectedOut: "Go 2009 true\n"},
+			{Name: "Declare fruit := \"apple\", count := 3, fresh := true. Print all three with fmt.Println(fruit, count, fresh)", ExpectedOut: "apple 3 true\n"},
 		},
 		"ifelse": {
-			{Name: "Prints adult for age 20", ExpectedOut: "adult\n"},
+			{Name: "Declare temp := 35. If temp > 30 print 'hot' else print 'cool' using fmt.Println", ExpectedOut: "hot\n"},
+			{Name: "Declare score := 85. If score >= 60 print 'pass' else print 'fail' using fmt.Println", ExpectedOut: "pass\n"},
 		},
 		"switch": {
-			{Name: "Prints Start of week", ExpectedOut: "Start of week\n"},
+			{Name: "Declare grade := \"A\". Switch on grade: A prints 'Excellent', B prints 'Good', default prints 'OK'. Use fmt.Println", ExpectedOut: "Excellent\n"},
+			{Name: "Declare color := \"red\". Switch on color: red prints 'Stop', green prints 'Go', default prints 'Wait'. Use fmt.Println", ExpectedOut: "Stop\n"},
 		},
 	})
 }

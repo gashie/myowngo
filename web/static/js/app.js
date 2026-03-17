@@ -2,6 +2,8 @@ import { Progress } from './modules/progress.js';
 import { Gamification, BADGES } from './modules/gamification.js';
 import { GameState } from './modules/gameState.js';
 import { Inventory } from './modules/inventory.js';
+import { getBestGameScore } from './modules/miniGames.js';
+import { hasPickedLang, showLangPickerModal, renderLangSwitcher } from './modules/langPicker.js';
 
 const progress = new Progress();
 const gamification = new Gamification(progress);
@@ -10,6 +12,15 @@ const inventory = new Inventory(gameState);
 
 // ---- Track login streak ----
 gameState.trackLogin();
+
+// ---- Language Picker (first-visit modal + nav switcher) ----
+if (!hasPickedLang()) {
+    showLangPickerModal().then(() => {
+        renderLangSwitcher('home-lang-switcher');
+    });
+} else {
+    renderLangSwitcher('home-lang-switcher');
+}
 
 // ---- Update Navigation HUD ----
 function updateNav() {
@@ -82,6 +93,21 @@ function updateQuestMap() {
             if (allDone) {
                 node.classList.add('completed');
                 node.classList.remove('in-progress');
+                // Add mini-game replay icon if not already present
+                if (!node.querySelector('.lesson-replay-icon')) {
+                    const replayBtn = document.createElement('span');
+                    replayBtn.className = 'lesson-replay-icon';
+                    replayBtn.title = 'Play mini-games';
+                    replayBtn.textContent = '\uD83C\uDFAE';
+                    const best = getBestGameScore(slug);
+                    if (best > 0) replayBtn.title += ` (Best: ${best} pts)`;
+                    replayBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.location.href = `/lesson/${slug}?game=1`;
+                    });
+                    node.appendChild(replayBtn);
+                }
             } else {
                 node.classList.add('in-progress');
                 node.classList.remove('completed');

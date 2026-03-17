@@ -332,3 +332,30 @@ pre {
         font-size: 1.8rem;
     }
 }
+
+/* ============================================
+   LESSON SEARCH
+   ============================================ */
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    margin: 0 auto 16px;
+    max-width: 500px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+}
+.search-box input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #e2e8f0;
+    font-size: 0.9rem;
+    font-family: inherit;
+}
+.search-box input::placeholder {
+    color: #64748b;
+}

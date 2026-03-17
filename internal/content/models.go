@@ -1,5 +1,24 @@
 package content
 
+// SupportedLanguages lists all source languages users can learn Go from.
+var SupportedLanguages = []LanguageInfo{
+	{ID: "javascript", Name: "JavaScript", Label: "NODE.JS", Icon: "\u2B22", Extension: ".js", PrismClass: "language-javascript"},
+	{ID: "python", Name: "Python", Label: "PYTHON", Icon: "\U0001F40D", Extension: ".py", PrismClass: "language-python"},
+	{ID: "csharp", Name: "C#", Label: "C#", Icon: "#\uFE0F\u20E3", Extension: ".cs", PrismClass: "language-csharp"},
+	{ID: "java", Name: "Java", Label: "JAVA", Icon: "\u2615", Extension: ".java", PrismClass: "language-java"},
+	{ID: "php", Name: "PHP", Label: "PHP", Icon: "\U0001F418", Extension: ".php", PrismClass: "language-php"},
+}
+
+// LanguageInfo describes a supported source language.
+type LanguageInfo struct {
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	Label     string `json:"label"`
+	Icon      string `json:"icon"`
+	Extension string `json:"extension"`
+	PrismClass string `json:"prismClass"`
+}
+
 // Phase represents a learning phase (e.g., "Foundations", "Data Structures")
 type Phase struct {
 	ID          int      `json:"id"`
@@ -11,23 +30,24 @@ type Phase struct {
 	XPRequired  int      `json:"xpRequired"`
 }
 
-// Lesson represents a single learning topic with paired JS/Go code
+// Lesson represents a single learning topic with paired source/Go code
 type Lesson struct {
-	ID          int          `json:"id"`
-	Slug        string       `json:"slug"`
-	Title       string       `json:"title"`
-	PhaseID     int          `json:"phaseId"`
-	Order       int          `json:"order"`
-	NodeCode    string       `json:"nodeCode"`
-	GoCode      string       `json:"goCode"`
-	Explanation string       `json:"explanation"`
-	TeacherTips []TeacherTip `json:"teacherTips"`
-	Annotations []Annotation `json:"annotations"`
-	Challenge   Challenge    `json:"challenge"`
-	TestCases   []TestCase   `json:"testCases"`
-	XPReward    int          `json:"xpReward"`
-	CoinReward  int          `json:"coinReward"`
-	Playable    bool         `json:"playable"`
+	ID          int                 `json:"id"`
+	Slug        string              `json:"slug"`
+	Title       string              `json:"title"`
+	PhaseID     int                 `json:"phaseId"`
+	Order       int                 `json:"order"`
+	NodeCode    string              `json:"nodeCode"`
+	GoCode      string              `json:"goCode"`
+	SourceCodes map[string]string   `json:"sourceCodes"`
+	Explanation string              `json:"explanation"`
+	TeacherTips []TeacherTip        `json:"teacherTips"`
+	Annotations []Annotation        `json:"annotations"`
+	Challenge   Challenge           `json:"challenge"`
+	TestCases   []TestCase          `json:"testCases"`
+	XPReward    int                 `json:"xpReward"`
+	CoinReward  int                 `json:"coinReward"`
+	Playable    bool                `json:"playable"`
 	// Navigation
 	PrevSlug string `json:"prevSlug"`
 	NextSlug string `json:"nextSlug"`
@@ -41,10 +61,12 @@ type TeacherTip struct {
 	Content string `json:"content"`
 }
 
-// Annotation links a line in JS to a line in Go with explanation text
+// Annotation links a line in the source language to a line in Go with explanation text.
+// LineNode is kept for backward compatibility (JS). LineSrc is the generic source line.
 type Annotation struct {
 	LineGo   int    `json:"lineGo"`
 	LineNode int    `json:"lineNode"`
+	LineSrc  int    `json:"lineSrc"`
 	Text     string `json:"text"`
 }
 

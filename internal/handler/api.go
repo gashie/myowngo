@@ -2,10 +2,15 @@ package handler
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"goquest/internal/content"
 	"io"
 	"net/http"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"time"
 )
 
 // APIHandler serves JSON API endpoints
@@ -34,6 +39,12 @@ func (h *APIHandler) GetLesson(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(lesson)
+}
+
+// ListLanguages returns all supported source languages
+func (h *APIHandler) ListLanguages(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(content.SupportedLanguages)
 }
 
 // playgroundRequest is the format expected by play.golang.org
@@ -73,4 +84,73 @@ func (h *APIHandler) RunCode(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	io.Copy(w, resp.Body)
+}
+
+// RunCodeLocal runs Go code using the local Go compiler (if available)
+func (h *APIHandler) RunCodeLocal(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodHead {
+		// Check if local Go is available
+		if _, err := exec.LookPath("go"); err != nil {
+			http.Error(w, "go not found", http.StatusNotFound)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	var req struct {
+		Code string `json:"code"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// Create temp dir
+	tmpDir, err := os.MkdirTemp("", "goquest-run-*")
+	if err != nil {
+		jsonError(w, "failed to create temp dir")
+		return
+	}
+	defer os.RemoveAll(tmpDir)
+
+	// Write code file
+	mainFile := filepath.Join(tmpDir, "main.go")
+	if err := os.WriteFile(mainFile, []byte(req.Code), 0644); err != nil {
+		jsonError(w, "failed to write code file")
+		return
+	}
+
+	// Run with 10s timeout
+	ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, "go", "run", mainFile)
+	cmd.Dir = tmpDir
+
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	err = cmd.Run()
+
+	w.Header().Set("Content-Type", "application/json")
+	result := map[string]interface{}{
+		"output": stdout.String(),
+		"stderr": stderr.String(),
+	}
+	if err != nil {
+		// Use err.Error() as fallback when stderr is empty (e.g. timeout, signal kill)
+		errMsg := stderr.String()
+		if errMsg == "" {
+			errMsg = err.Error()
+		}
+		result["error"] = errMsg
+	}
+	json.NewEncoder(w).Encode(result)
+}
+
+func jsonError(w http.ResponseWriter, msg string) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"error": msg})
 }

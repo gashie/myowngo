@@ -41,7 +41,8 @@ func NewPageHandler(c *content.Curriculum, tmplDir string) *PageHandler {
 // Home renders the quest map
 func (h *PageHandler) Home(w http.ResponseWriter, r *http.Request) {
 	err := h.templates.ExecuteTemplate(w, "home.html", map[string]interface{}{
-		"Phases": h.curriculum.Phases,
+		"Phases":    h.curriculum.Phases,
+		"Languages": content.SupportedLanguages,
 	})
 	if err != nil {
 		log.Printf("template error: %v", err)
@@ -60,8 +61,9 @@ func (h *PageHandler) Lesson(w http.ResponseWriter, r *http.Request) {
 	phase := h.curriculum.FindPhaseByLesson(slug)
 
 	err := h.templates.ExecuteTemplate(w, "lesson.html", map[string]interface{}{
-		"Lesson": lesson,
-		"Phase":  phase,
+		"Lesson":    lesson,
+		"Phase":     phase,
+		"Languages": content.SupportedLanguages,
 	})
 	if err != nil {
 		log.Printf("template error: %v", err)
@@ -80,48 +82,3 @@ func (h *PageHandler) Dashboard(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Empire renders the empire builder page
-func (h *PageHandler) Empire(w http.ResponseWriter, r *http.Request) {
-	err := h.templates.ExecuteTemplate(w, "empire.html", map[string]interface{}{
-		"Phases": h.curriculum.Phases,
-	})
-	if err != nil {
-		log.Printf("template error: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-	}
-}
-
-// Challenges renders the mini-challenge mode selection
-func (h *PageHandler) Challenges(w http.ResponseWriter, r *http.Request) {
-	err := h.templates.ExecuteTemplate(w, "challenges.html", map[string]interface{}{
-		"Phases": h.curriculum.Phases,
-	})
-	if err != nil {
-		log.Printf("template error: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-	}
-}
-
-// ChallengeMode renders a specific mini-challenge game
-func (h *PageHandler) ChallengeMode(w http.ResponseWriter, r *http.Request) {
-	mode := r.PathValue("mode")
-	err := h.templates.ExecuteTemplate(w, "challenge-mode.html", map[string]interface{}{
-		"Mode":   mode,
-		"Phases": h.curriculum.Phases,
-	})
-	if err != nil {
-		log.Printf("template error: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-	}
-}
-
-// Story renders the story quest page
-func (h *PageHandler) Story(w http.ResponseWriter, r *http.Request) {
-	err := h.templates.ExecuteTemplate(w, "story.html", map[string]interface{}{
-		"Phases": h.curriculum.Phases,
-	})
-	if err != nil {
-		log.Printf("template error: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-	}
-}

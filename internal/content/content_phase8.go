@@ -53,8 +53,8 @@ func init() {
 	registerChallenges(map[string]Challenge{
 		"regex": {
 			Type:        "build",
-			Prompt:      "Use regexp to find all numbers in the string \"abc 123 def 456 ghi 789\" and print the matches.",
-			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"regexp\"\n)\n\nfunc main() {\n\tinput := \"abc 123 def 456 ghi 789\"\n\t// Find all numbers\n}",
+			Prompt:      "Find all numbers in a string using regexp.\n\nRequirements:\n- Use `regexp.MustCompile(` + \"`\" + `[0-9]+` + \"`\" + `)` to compile the pattern\n- Use `re.FindAllString(input, -1)` to find all matches\n- Print the result with `fmt.Println(matches)`\n- Output: `[123 456 789]`",
+			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"regexp\"\n)\n\n// Use regexp to find all numbers in a string.\n// Compile a pattern, then use FindAllString.\n//\n// Expected output: [123 456 789]\n\nfunc main() {\n\tinput := \"abc 123 def 456 ghi 789\"\n\t// Your code here\n}",
 			Solution:    "package main\n\nimport (\n\t\"fmt\"\n\t\"regexp\"\n)\n\nfunc main() {\n\tinput := \"abc 123 def 456 ghi 789\"\n\tre := regexp.MustCompile(`[0-9]+`)\n\tmatches := re.FindAllString(input, -1)\n\tfmt.Println(matches)\n}",
 			ExpectedOut: "[123 456 789]\n",
 			Hints:       []string{"regexp.MustCompile(`[0-9]+`)", "FindAllString(input, -1) finds all matches"},
@@ -63,8 +63,8 @@ func init() {
 		},
 		"crypto": {
 			Type:        "build",
-			Prompt:      "Compute the SHA256 hash of the string \"hello\" and print it as a hex string.",
-			StarterCode: "package main\n\nimport (\n\t\"crypto/sha256\"\n\t\"encoding/hex\"\n\t\"fmt\"\n)\n\nfunc main() {\n\t// Hash \"hello\" with SHA256 and print hex\n}",
+			Prompt:      "Compute the SHA256 hash of \"hello\" as hex.\n\nRequirements:\n- Use `sha256.Sum256([]byte(\"hello\"))` to hash\n- Use `hex.EncodeToString(hash[:])` to convert to hex string\n- Print with `fmt.Println`\n- Output: `2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824`",
+			StarterCode: "package main\n\nimport (\n\t\"crypto/sha256\"\n\t\"encoding/hex\"\n\t\"fmt\"\n)\n\n// Hash the string \"hello\" with SHA256 and print the hex digest.\n// sha256.Sum256 returns [32]byte; use [:] to convert to a slice.\n//\n// Expected output: 2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824\n\nfunc main() {\n\t// Your code here\n}",
 			Solution:    "package main\n\nimport (\n\t\"crypto/sha256\"\n\t\"encoding/hex\"\n\t\"fmt\"\n)\n\nfunc main() {\n\thash := sha256.Sum256([]byte(\"hello\"))\n\tfmt.Println(hex.EncodeToString(hash[:]))\n}",
 			ExpectedOut: "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824\n",
 			Hints:       []string{"sha256.Sum256 returns [32]byte — use hash[:] to get a slice", "hex.EncodeToString converts bytes to hex"},
@@ -73,8 +73,8 @@ func init() {
 		},
 		"datetime": {
 			Type:        "build",
-			Prompt:      "Parse the date string \"2024-03-15\" using the format \"2006-01-02\" and print the formatted date as \"03/15/2024\".",
-			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nfunc main() {\n\t// Parse and reformat the date\n}",
+			Prompt:      "Parse a date string and reformat it.\n\nRequirements:\n- Use `time.Parse(\"2006-01-02\", \"2024-03-15\")` to parse the date\n- Use `date.Format(\"01/02/2006\")` to reformat\n- Print with `fmt.Println`\n- Output: `03/15/2024`",
+			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\n// Parse a date string and reformat it.\n// Go uses a reference date for layouts: 2006-01-02\n//\n// Expected output: 03/15/2024\n\nfunc main() {\n\t// Your code here\n}",
 			Solution:    "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nfunc main() {\n\tdate, _ := time.Parse(\"2006-01-02\", \"2024-03-15\")\n\tfmt.Println(date.Format(\"01/02/2006\"))\n}",
 			ExpectedOut: "03/15/2024\n",
 			Hints:       []string{"Go's reference date: 2006-01-02 (Jan 2, 2006)", "Use the same reference pattern for both Parse and Format"},
@@ -83,8 +83,8 @@ func init() {
 		},
 		"logging": {
 			Type:        "rewrite",
-			Prompt:      "Rewrite in Go:\nconsole.log(new Date().toISOString(), 'hello world')",
-			StarterCode: "package main\n\nimport \"log\"\n\nfunc main() {\n\t// Use log.Println\n}",
+			Prompt:      "Convert JS console.log with timestamp to Go.\n\nJavaScript: `console.log(new Date().toISOString(), 'hello world')`\nGo: `log.Println(\"server started\")` — adds timestamp automatically\n\nNote: log output goes to stderr — stdout will be empty.",
+			StarterCode: "package main\n\nimport \"log\"\n\n// Use log.Println to log a message with an automatic timestamp.\n// Note: log output goes to stderr, not stdout.\n\nfunc main() {\n\t// Your code here\n}",
 			Solution:    "package main\n\nimport \"log\"\n\nfunc main() {\n\tlog.Println(\"hello world\")\n}",
 			ExpectedOut: "",
 			Hints:       []string{"log.Println automatically adds timestamp", "No need to manually create Date objects"},

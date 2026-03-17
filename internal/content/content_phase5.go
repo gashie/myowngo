@@ -64,8 +64,8 @@ func init() {
 	registerChallenges(map[string]Challenge{
 		"stdout": {
 			Type:        "rewrite",
-			Prompt:      "Rewrite in Go:\nprocess.stdout.write('hello world\\n')",
-			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\t// Write to stdout\n}",
+			Prompt:      "Convert JS stdout write to Go.\n\nJavaScript: `process.stdout.write('hello world\\n')`\nGo: `fmt.Fprint(os.Stdout, \"hello world\\n\")`\n\nRequirements:\n- Use `fmt.Fprint(os.Stdout, ...)` to write directly to stdout\n- Output: `hello world`",
+			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"os\"\n)\n\n// Write directly to stdout using fmt.Fprint and os.Stdout.\n//\n// Expected output: hello world\n\nfunc main() {\n\t// Your code here\n}",
 			Solution:    "package main\n\nimport (\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tfmt.Fprint(os.Stdout, \"hello world\\n\")\n}",
 			ExpectedOut: "hello world\n",
 			Hints:       []string{"Use fmt.Fprint(os.Stdout, ...)", "os.Stdout is the standard output"},

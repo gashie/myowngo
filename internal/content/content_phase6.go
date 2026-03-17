@@ -49,8 +49,8 @@ func init() {
 	registerChallenges(map[string]Challenge{
 		"generators": {
 			Type:        "build",
-			Prompt:      "Write a generator function that sends numbers 1 to 5 on a channel, then closes it. Use range to receive and print each number.",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc numbers() chan int {\n\t// Create channel, send 1-5, close it\n}\n\nfunc main() {\n\tfor n := range numbers() {\n\t\tfmt.Println(n)\n\t}\n}",
+			Prompt:      "Write a channel-based generator for numbers 1-5.\n\nRequirements:\n- `numbers()` returns `chan int`\n- Inside, create channel, start goroutine that sends 1-5, then `close(ch)`\n- `main` already uses `for n := range numbers()` to print\n- Output: `1`, `2`, `3`, `4`, `5` (5 lines)",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Build a channel-based generator that yields numbers 1 through 5.\n// Send values in a goroutine and close the channel when done.\n//\n// Expected output:\n//   1\n//   2\n//   3\n//   4\n//   5\n\nfunc numbers() chan int {\n\t// Your code here\n}\n\nfunc main() {\n\tfor n := range numbers() {\n\t\tfmt.Println(n)\n\t}\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc numbers() chan int {\n\tch := make(chan int)\n\tgo func() {\n\t\tfor i := 1; i <= 5; i++ {\n\t\t\tch <- i\n\t\t}\n\t\tclose(ch)\n\t}()\n\treturn ch\n}\n\nfunc main() {\n\tfor n := range numbers() {\n\t\tfmt.Println(n)\n\t}\n}",
 			ExpectedOut: "1\n2\n3\n4\n5\n",
 			Hints:       []string{"Send values in a goroutine: go func() { ch <- value }()", "close(ch) signals no more values"},

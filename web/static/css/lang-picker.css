@@ -1,0 +1,266 @@
+/* ============================================
+   LANGUAGE PICKER MODAL
+   ============================================ */
+.lang-picker-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.lang-picker-overlay.visible {
+    opacity: 1;
+}
+
+.lang-picker-card {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 2.5rem;
+    max-width: 540px;
+    width: 90%;
+    text-align: center;
+    animation: langPickerIn 0.4s ease;
+}
+
+@keyframes langPickerIn {
+    from { transform: scale(0.9) translateY(20px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.lang-picker-gopher {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.lang-picker-card h2 {
+    font-family: 'Orbitron', sans-serif;
+    background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.6rem;
+    margin: 0.5rem 0;
+}
+
+.lang-picker-subtitle {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.lang-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.lang-picker-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #e2e8f0;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.lang-picker-btn:hover {
+    background: rgba(58, 123, 213, 0.2);
+    border-color: #3a7bd5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(58, 123, 213, 0.3);
+}
+
+.lang-picker-icon {
+    font-size: 2rem;
+}
+
+.lang-picker-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+.lang-picker-hint {
+    color: #64748b;
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+/* ============================================
+   LANGUAGE SWITCHER (nav bar / compact)
+   ============================================ */
+.lang-switcher {
+    position: relative;
+    display: inline-block;
+}
+
+.lang-switcher-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    color: #e2e8f0;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.lang-switcher-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.lang-sw-icon {
+    font-size: 1rem;
+}
+
+.lang-sw-name {
+    font-weight: 500;
+}
+
+.lang-sw-arrow {
+    font-size: 0.7rem;
+    opacity: 0.6;
+}
+
+.lang-switcher-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 4px;
+    background: #1a1a2e;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 4px;
+    min-width: 160px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition: all 0.15s ease;
+    z-index: 1000;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.lang-switcher-dropdown.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.lang-sw-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    color: #cbd5e1;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    text-align: left;
+}
+
+.lang-sw-option:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.lang-sw-option.active {
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+.lang-sw-check {
+    margin-left: auto;
+    color: #22c55e;
+}
+
+/* ============================================
+   HOME PAGE LANG SWITCHER
+   ============================================ */
+.home-lang-switcher {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.home-lang-switcher .lang-switcher-btn {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+}
+
+/* ============================================
+   LESSON BAR LANG SWITCHER
+   ============================================ */
+.bar-lang-switcher {
+    display: inline-flex;
+    margin-right: 8px;
+}
+
+/* ============================================
+   COMPARE STEP — LANGUAGE TABS
+   ============================================ */
+.compare-lang-switcher {
+    margin-bottom: 12px;
+}
+
+.compare-lang-tabs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.compare-lang-tab {
+    padding: 5px 12px;
+    font-size: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.compare-lang-tab:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+}
+
+.compare-lang-tab.active {
+    background: rgba(58, 123, 213, 0.2);
+    border-color: #3a7bd5;
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+/* Source compare label coloring */
+.compare-label.source {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+}

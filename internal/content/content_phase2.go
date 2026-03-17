@@ -110,8 +110,8 @@ func init() {
 	registerChallenges(map[string]Challenge{
 		"array_iteration": {
 			Type:   "build",
-			Prompt: "Write a Go program that takes []string{\"hello\", \"world\", \"go\"} and prints each string in UPPERCASE, one per line.",
-			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc main() {\n\twords := []string{\"hello\", \"world\", \"go\"}\n\t// Use range and strings.ToUpper\n}",
+			Prompt: "Print each word in UPPERCASE.\n\nRequirements:\n- Use `for _, w := range words {` to iterate the slice\n- Use `strings.ToUpper(w)` to convert each word\n- Use `fmt.Println()` to print each on its own line\n- Output: `HELLO`, `WORLD`, `GO` (3 lines)",
+			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\n// Iterate a slice and print each word in uppercase.\n// Use 'for _, w := range words' and strings.ToUpper(w).\n//\n// Expected output:\n//   HELLO\n//   WORLD\n//   GO\n\nfunc main() {\n\twords := []string{\"hello\", \"world\", \"go\"}\n\t// Your code here\n}",
 			Solution:    "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc main() {\n\twords := []string{\"hello\", \"world\", \"go\"}\n\tfor _, w := range words {\n\t\tfmt.Println(strings.ToUpper(w))\n\t}\n}",
 			ExpectedOut: "HELLO\nWORLD\nGO\n",
 			Hints:       []string{"Use for _, w := range words", "strings.ToUpper(s) converts to uppercase"},
@@ -120,8 +120,8 @@ func init() {
 		},
 		"array_sort": {
 			Type:        "build",
-			Prompt:      "Sort []int{5, 3, 8, 1, 9, 2} in ascending order and print it.",
-			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"sort\"\n)\n\nfunc main() {\n\tnums := []int{5, 3, 8, 1, 9, 2}\n\t// Sort and print\n}",
+			Prompt:      "Sort a slice of integers in ascending order.\n\nRequirements:\n- Use `sort.Ints(nums)` to sort the slice in place\n- Use `fmt.Println(nums)` to print — Go prints slices as `[1 2 3 5 8 9]`\n- Output must be exactly one line: `[1 2 3 5 8 9]`",
+			StarterCode: "package main\n\nimport (\n\t\"fmt\"\n\t\"sort\"\n)\n\n// Sort a slice of integers in ascending order and print it.\n//\n// Expected output: [1 2 3 5 8 9]\n\nfunc main() {\n\tnums := []int{5, 3, 8, 1, 9, 2}\n\t// Your code here\n}",
 			Solution:    "package main\n\nimport (\n\t\"fmt\"\n\t\"sort\"\n)\n\nfunc main() {\n\tnums := []int{5, 3, 8, 1, 9, 2}\n\tsort.Ints(nums)\n\tfmt.Println(nums)\n}",
 			ExpectedOut: "[1 2 3 5 8 9]\n",
 			Hints:       []string{"Use sort.Ints() to sort integers", "sort.Ints modifies the slice in place"},
@@ -130,8 +130,8 @@ func init() {
 		},
 		"maps": {
 			Type:        "build",
-			Prompt:      "Create a map with \"name\"->\"Alice\", \"city\"->\"NYC\". Print whether key \"name\" exists, then delete it and check again.",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// Create map, check key, delete, check again\n}",
+			Prompt:      "Check if a map key exists, delete it, check again.\n\nRequirements:\n- Create map: `m := map[string]string{\"name\": \"Alice\", \"city\": \"NYC\"}`\n- Use `_, ok := m[\"name\"]` and `fmt.Println(ok)` to check existence\n- Use `delete(m, \"name\")` to remove the key\n- Check again and print\n- Output: `true` then `false` (2 lines)",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Use the comma-ok idiom to check if a key exists,\n// delete it, then check again.\n//\n// Expected output:\n//   true\n//   false\n\nfunc main() {\n\t// Your code here\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tm := map[string]string{\n\t\t\"name\": \"Alice\",\n\t\t\"city\": \"NYC\",\n\t}\n\t_, ok := m[\"name\"]\n\tfmt.Println(ok)\n\tdelete(m, \"name\")\n\t_, ok = m[\"name\"]\n\tfmt.Println(ok)\n}",
 			ExpectedOut: "true\nfalse\n",
 			Hints:       []string{"Use _, ok := m[key] to check existence", "Use delete(m, key) to remove a key"},
@@ -140,8 +140,8 @@ func init() {
 		},
 		"objects": {
 			Type:        "build",
-			Prompt:      "Create a struct Animal with Name and Sound fields. Add a Speak() method that returns \"<Name> says <Sound>\". Create a cat and print cat.Speak().",
-			StarterCode: "package main\n\nimport \"fmt\"\n\n// Define Animal struct and Speak method\n\nfunc main() {\n\t// Create a cat and call Speak()\n}",
+			Prompt:      "Create a struct with a method and call it.\n\nRequirements:\n- Define `type Animal struct { Name string; Sound string }`\n- Add method `func (a Animal) Speak() string` that returns `a.Name + \" says \" + a.Sound`\n- Create `cat := Animal{Name: \"Cat\", Sound: \"Meow\"}`\n- Print `cat.Speak()` — output: `Cat says Meow`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Define an Animal struct with Name and Sound fields,\n// then add a Speak() method that returns \"Name says Sound\".\n//\n// Expected output: Cat says Meow\n\n// Define Animal struct and Speak method here\n\nfunc main() {\n\t// Create a Cat and print its Speak() result\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\ntype Animal struct {\n\tName  string\n\tSound string\n}\n\nfunc (a Animal) Speak() string {\n\treturn a.Name + \" says \" + a.Sound\n}\n\nfunc main() {\n\tcat := Animal{Name: \"Cat\", Sound: \"Meow\"}\n\tfmt.Println(cat.Speak())\n}",
 			ExpectedOut: "Cat says Meow\n",
 			Hints:       []string{"type Animal struct { Name string; Sound string }", "func (a Animal) Speak() string { ... }"},
@@ -150,8 +150,8 @@ func init() {
 		},
 		"destructuring": {
 			Type:        "rewrite",
-			Prompt:      "Rewrite in Go:\nconst obj = { x: 10, y: 20 }\nconst { x, y } = obj\nconsole.log(x + y)",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// Use a struct or multiple assignment for x=10, y=20\n\t// Print their sum\n}",
+			Prompt:      "Convert JS destructuring to Go structs.\n\nJavaScript:\n```js\nconst obj = { x: 10, y: 20 }\nconst { x, y } = obj\nconsole.log(x + y)\n```\n\nRequirements:\n- Define `type Point struct { X int; Y int }`\n- Create `p := Point{X: 10, Y: 20}`\n- Extract with `x, y := p.X, p.Y`\n- Print `x + y` — output: `30`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Go has no destructuring syntax. Instead, use multiple assignment\n// to extract struct fields: x, y := p.X, p.Y\n//\n// Expected output: 30\n\nfunc main() {\n\t// Define a Point struct, create one, extract fields, print their sum\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\ntype Point struct {\n\tX int\n\tY int\n}\n\nfunc main() {\n\tp := Point{X: 10, Y: 20}\n\tx, y := p.X, p.Y\n\tfmt.Println(x + y)\n}",
 			ExpectedOut: "30\n",
 			Hints:       []string{"Create a struct with X and Y fields", "Use multiple assignment: x, y := p.X, p.Y"},
@@ -160,8 +160,8 @@ func init() {
 		},
 		"rest": {
 			Type:        "build",
-			Prompt:      "Write a variadic function sum that takes any number of ints and returns their sum. Call sum(1,2,3,4,5) and print.",
-			StarterCode: "package main\n\nimport \"fmt\"\n\n// Write sum function\n\nfunc main() {\n\tfmt.Println(sum(1, 2, 3, 4, 5))\n}",
+			Prompt:      "Write a variadic sum function.\n\nRequirements:\n- Define `func sum(nums ...int) int` — `...int` accepts any number of ints\n- Loop through `nums` and add them up, return the total\n- `main` already calls `sum(1,2,3,4,5)` and prints\n- Output must be exactly one line: `15`",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Write a variadic function that accepts any number of ints\n// and returns their total. Inside, 'nums' is a []int slice.\n//\n// Expected output: 15\n\n// Write sum function here\n\nfunc main() {\n\tfmt.Println(sum(1, 2, 3, 4, 5))\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc sum(nums ...int) int {\n\ttotal := 0\n\tfor _, n := range nums {\n\t\ttotal += n\n\t}\n\treturn total\n}\n\nfunc main() {\n\tfmt.Println(sum(1, 2, 3, 4, 5))\n}",
 			ExpectedOut: "15\n",
 			Hints:       []string{"Use ...int for variadic parameter", "nums is a []int inside the function"},
@@ -170,8 +170,8 @@ func init() {
 		},
 		"swapping": {
 			Type:        "rewrite",
-			Prompt:      "Rewrite this JS swap in Go:\nlet a = 'foo', b = 'bar'\nconsole.log(a, b)\n;[b, a] = [a, b]\nconsole.log(a, b)",
-			StarterCode: "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// Declare a=\"foo\", b=\"bar\", print, swap, print\n}",
+			Prompt:      "Convert JS variable swap to Go.\n\nJavaScript: `[b, a] = [a, b]`\nGo: `a, b = b, a`\n\nRequirements:\n- Declare `a := \"foo\"` and `b := \"bar\"`\n- Print with `fmt.Println(a, b)` → `foo bar`\n- Swap with `a, b = b, a`\n- Print again → `bar foo`\n- Output: 2 lines",
+			StarterCode: "package main\n\nimport \"fmt\"\n\n// Go supports tuple assignment for swapping variables.\n// Declare two strings, print them, swap them, print again.\n//\n// Expected output:\n//   foo bar\n//   bar foo\n\nfunc main() {\n\t// Your code here\n}",
 			Solution:    "package main\n\nimport \"fmt\"\n\nfunc main() {\n\ta := \"foo\"\n\tb := \"bar\"\n\tfmt.Println(a, b)\n\tb, a = a, b\n\tfmt.Println(a, b)\n}",
 			ExpectedOut: "foo bar\nbar foo\n",
 			Hints:       []string{"Go supports tuple assignment: a, b = b, a"},
@@ -183,27 +183,43 @@ func init() {
 	registerTests(map[string][]TestCase{
 		"arrays": {
 			{Name: "Slice operations work correctly", ExpectedOut: "[1 2 3 4 5]\n[2 4 6 8 10]\n"},
+			{Name: "Create []int{10, 20, 30}, double each with a loop, print both slices", ExpectedOut: "[10 20 30]\n[20 40 60]\n"},
 		},
 		"array_iteration": {
 			{Name: "Prints words in uppercase", ExpectedOut: "HELLO\nWORLD\nGO\n"},
+			{Name: "Print each fruit in []string{\"apple\", \"banana\"} in uppercase using range and strings.ToUpper", ExpectedOut: "APPLE\nBANANA\n"},
 		},
 		"array_sort": {
 			{Name: "Sorts ascending", ExpectedOut: "[1 2 3 5 8 9]\n"},
+			{Name: "Sort []int{9, 1, 5, 3} ascending with sort.Ints and print", ExpectedOut: "[1 3 5 9]\n"},
 		},
 		"maps": {
 			{Name: "Key exists then deleted", ExpectedOut: "true\nfalse\n"},
+			{Name: "Create map with \"lang\":\"Go\", check key exists, delete, check again", ExpectedOut: "true\nfalse\n"},
 		},
 		"objects": {
 			{Name: "Animal speaks correctly", ExpectedOut: "Cat says Meow\n"},
+			{Name: "Create Dog Animal with Sound \"Woof\" and print Speak()", ExpectedOut: "Dog says Woof\n",
+				WrapperCode: "func main() {\n\tdog := Animal{Name: \"Dog\", Sound: \"Woof\"}\n\tfmt.Println(dog.Speak())\n}"},
+			{Name: "Create Bird Animal with Sound \"Tweet\" and print Speak()", ExpectedOut: "Bird says Tweet\n",
+				WrapperCode: "func main() {\n\tbird := Animal{Name: \"Bird\", Sound: \"Tweet\"}\n\tfmt.Println(bird.Speak())\n}"},
 		},
 		"destructuring": {
 			{Name: "Sum of values", ExpectedOut: "30\n"},
+			{Name: "Create Point{X: 5, Y: 15}, extract x, y and print x + y", ExpectedOut: "20\n"},
 		},
 		"rest": {
 			{Name: "Sum of 1-5", ExpectedOut: "15\n"},
+			{Name: "sum(10) returns 10", ExpectedOut: "10\n",
+				WrapperCode: "func main() { fmt.Println(sum(10)) }"},
+			{Name: "sum(2, 4, 6, 8) returns 20", ExpectedOut: "20\n",
+				WrapperCode: "func main() { fmt.Println(sum(2, 4, 6, 8)) }"},
+			{Name: "sum() with no args returns 0", ExpectedOut: "0\n",
+				WrapperCode: "func main() { fmt.Println(sum()) }"},
 		},
 		"swapping": {
 			{Name: "Variables swapped", ExpectedOut: "foo bar\nbar foo\n"},
+			{Name: "Declare x := \"hello\", y := \"world\", print, swap with x, y = y, x, print again", ExpectedOut: "hello world\nworld hello\n"},
 		},
 	})
 }
